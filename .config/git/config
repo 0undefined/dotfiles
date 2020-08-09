@@ -1,0 +1,26 @@
+[user]
+	email         = example@example.org
+	name          = whoami
+	signingkey    = example@example.org
+[core]
+	editor        = vim
+	excludesfile  = ~/.config/git/gitignore
+	pager         = less -F -X
+[commit]
+	gpgsign       = true
+[gpg]
+	program       = gpg
+[diff]
+	tool          = vimdiff
+[pull]
+	rebase        = true
+[difftool]
+	prompt        = false
+[mergetool]
+	vimdiff       = true
+  prompt        = false
+[alias]
+	d             = difftool
+[merge]
+	tool          = vimdiff
+	conflictstyle = diff3

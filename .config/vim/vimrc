@@ -1,0 +1,117 @@
+set directory=$XDG_CACHE_HOME/vim,~/,/tmp
+set backupdir=$XDG_CACHE_HOME/vim,~/,/tmp
+set viminfo+=n$XDG_CACHE_HOME/vim/viminfo
+let $MYVIMRC="$XDG_CONFIG_HOME/vim/vimrc"
+set runtimepath=$XDG_CONFIG_HOME/vim,$XDG_CONFIG_HOME/vim/after,$VIM,$VIMRUNTIME
+runtime! archlinux.vim
+scriptencoding utf-8
+
+" behaviour
+set history=200
+set wildmenu
+set ruler
+set cursorline
+set showmatch
+set hlsearch
+set nocompatible
+set backspace=2
+set incsearch
+set formatoptions+=tcroqn2bmj
+"set formatoptions+=1cjmnoqrw
+"set formatoptions+=2acjnoqrtw
+set relativenumber
+set number
+
+" Enable mouse support
+set mouse=a
+
+" tabs
+set expandtab
+set tabstop=2
+set softtabstop=2
+set shiftwidth=2
+set smartindent
+set textwidth=80
+set wrap
+
+" theme
+syntax enable
+
+" thematics
+set background=dark
+colorscheme jellybeans
+"set listchars=space:·\,eol:¬
+set listchars=
+set list
+
+
+" adding pathogen
+execute pathogen#infect('bundle/{}')
+filetype plugin indent on
+
+" encodings
+set fileencoding=utf-8
+set encoding=utf-8
+set fileformats=unix
+
+set viminfofile=${XDG_DATA_HOME:-$HOME/.local/share}/viminfo
+
+set grepprg=grep\ -nH\ $*
+
+"set statusline+=%#warningmsg#
+"set statusline+=%{SyntasticStatuslineFlag()}
+"set statusline+=%*
+
+let g:syntastic_always_populate_loc_list = 1
+let g:syntastic_auto_loc_list            = 1
+let g:syntastic_check_on_open            = 1
+let g:syntastic_check_on_wq              = 0
+
+" filetypes
+let g:syntastic_disabled_filetypes=['asm', 's', 'latex', 'tex']
+
+let g:tex_flavor='latex'
+let g:vimtex_view_method='zathura'
+let g:vimtex_quickfix_mode=0
+set conceallevel=2
+let g:tex_conceal='abdmg'
+"let g:syntastic_tex_checkers=['lacheck']
+let g:vimtex_compiler_method = 'latexrun'
+let g:vimtex_compiler_latexrun = {
+            \ 'backend' : 'jobs',
+            \ 'background' : 1,
+            \ 'build_dir' : 'latex.out',
+            \ 'options' : [
+            \   '-verbose-cmds',
+            \   '--latex-args="-synctex=1"',
+            \ ],
+            \}
+
+let g:latex_view_general_viewer = 'zathura'
+let g:vimtex_view_method = 'zathura'
+
+function! Synctex()
+  " remove 'silent' for debugging
+  execute "silent !mv -u latex.out/" . bufname('%')[:-5] . ".synctex.gz ."
+  execute "silent !zathura --synctex-forward " . line('.') . ":" . col('.') . ":" . bufname('%') . " " . bufname('%')[:-5] . ".pdf"
+  redraw!
+endfunction
+
+map <F5> :make<CR>
+au BufNewFile,BufRead *.fo setlocal ft=fasto
+au BufNewFile,BufRead /tmp/[a-zA-Z0-9]\+/ setlocal ft=sh
+
+" Remove trailing cancer on write
+autocmd BufWritePre * %s/\s\+$//e
+autocmd BufWritePost *.tex !latexrun --bibtex-cmd="biber" --latex-args="-synctex=1" %
+
+set makeprg=GCC_COLORS=\ make
+
+vnoremap // y/\V<C-R>"<CR>
+
+map! <ESC>[1;5A <C-Up>
+map! <ESC>[1;5B <C-Down>
+map! <ESC>[1;5C <C-Right>
+map! <ESC>[1;5D <C-Left>
+
+autocmd VimEnter * silent !echo -ne "\e[1 q"

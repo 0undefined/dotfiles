@@ -1,0 +1,281 @@
+# i3 config file (v4)
+# Please see http://i3wm.org/docs/userguide.html for a complete reference!
+set $mod Mod4
+
+### Variables
+# Logo key. Use Mod1 for Alt.
+set $mod Mod4
+# Your preferred  #terminal emulator
+set $term st
+# Home row direction keys, like vim
+set $left h
+set $down j
+set $up k
+set $right l
+
+font pango: DejaVuSans Mono Nerd Font Mono 12
+
+
+### Output configuration
+
+# Default wallpaper (more resolutions are available in /usr/share/sway/)
+exec_always feh --bg-scale $HOME/pictures/bg2.png
+
+# Use Mouse+$mod to drag floating windows to their wanted position
+floating_modifier $mod
+
+### Key bindings
+    # start a terminal
+    #bindsym $mod+Return exec $term -f "DejaVuSansMono Nerd Font Mono:pixelsize=16"
+    bindsym $mod+Return exec $term
+    bindsym $mod+e exec urxvt -bg '[50]#000000' -g 220x40 -t float -e nnn
+    bindsym $mod+Shift+Return exec $term -t float
+    bindsym $mod+Shift+p exec $term -f ":pixelsize=24"
+    bindsym $mod+Shift+o exec $term -f ":pixelsize=18"
+    bindsym $mod+p exec feh -^ float_sticky -R 15 https://www.cafeen.org/test.php
+    bindsym Print exec import -window root -display :0 ~/scr.png && xclip -selection clip -t image/png ~/scr.png
+    bindsym $mod+c exec exec $term -title float -e fsharpi --consolecolors+ --nologo --use:.scripts/fsharpinit.fsx
+    bindsym $mod+Shift+v exec exec $term -t float -e vim
+
+    # kill focused window
+    bindsym $mod+Shift+q kill
+
+    # start your launcher
+    # bindsym $mod+d exec $menu
+
+    bindsym $mod+Shift+d exec setxkbmap dk
+    bindsym $mod+Shift+s exec setxkbmap us
+
+    # Brightness control
+    bindsym XF86MonBrightnessDown exec brightnessctl s 10%-
+    bindsym XF86MonBrightnessUp exec brightnessctl s 10%+
+
+    # Volume control
+
+    bindsym XF86AudioLowerVolume exec pactl set-sink-volume $(pactl info | grep 'Default Sink' | sed -Ee 's/^.*: (.*)$/\1/g') -5%
+    bindsym XF86AudioRaiseVolume exec pactl set-sink-volume $(pactl info | grep 'Default Sink' | sed -Ee 's/^.*: (.*)$/\1/g') +5%
+    bindsym XF86AudioMute exec pactl set-sink-mute $(pactl info | grep 'Default Sink' | sed -Ee 's/^.*: (.*)$/\1/g') toggle
+
+
+# Your preferred application launcher
+bindsym $mod+d exec dmenu_run -i -q -fn 'DejaVuSansMono Nerd Font Mono'
+#bindsym $mod+d exec rofi -show run -theme Pop-Dark
+# Lock your computer
+bindsym $mod+x exec i3lock -i $HOME/pictures/lock.png -t -f -e
+
+# Drag floating windows by holding down $mod and left mouse button.
+# Resize them with right mouse button + $mod.
+# Despite the name, also works for non-floating windows.
+# Change normal to inverse to use left mouse button for resizing and right
+# mouse button for dragging.
+#floating_modifier $mod normal
+
+# reload the configuration file
+bindsym $mod+Shift+c reload
+# restart i3 inplace (preserves your layout/session, can be used to upgrade i3)
+bindsym $mod+Shift+r restart
+# exit i3 (logs you out of your X session)
+bindsym $mod+Shift+e exec "i3-nagbar -t warning -m 'You pressed the exit shortcut. Do you really want to exit i3? This will end your X session.' -b 'Yes, exit i3' 'i3-msg exit'"
+
+# split in horizontal orientation
+bindsym $mod+b split h
+
+# split in vertical orientation
+bindsym $mod+v split v
+
+#
+# Moving around:
+#
+    # Move your focus around
+    bindsym $mod+$left focus left
+    bindsym $mod+$down focus down
+    bindsym $mod+$up focus up
+    bindsym $mod+$right focus right
+    # or use $mod+[up|down|left|right]
+    bindsym $mod+Left focus left
+    bindsym $mod+Down focus down
+    bindsym $mod+Up focus up
+    bindsym $mod+Right focus right
+
+    # _move_ the focused window with the same, but add Shift
+    bindsym $mod+Shift+$left move left
+    bindsym $mod+Shift+$down move down
+    bindsym $mod+Shift+$up move up
+    bindsym $mod+Shift+$right move right
+    # ditto, with arrow keys
+    bindsym $mod+Shift+Left move left
+    bindsym $mod+Shift+Down move down
+    bindsym $mod+Shift+Up move up
+    bindsym $mod+Shift+Right move right
+#
+# Workspaces:
+#
+    set $ws0  "0:&#xf06d; "
+    set $ws1  "1:&#xf120; "
+    set $ws2  "2:&#xf269; "
+    set $ws3  "3:&#xf268; "
+    set $ws4  "4:&#xf0f4; "
+    set $ws5  "5:5"
+    set $ws6  "6:6"
+    set $ws7  "7:7"
+    set $ws8  "8:8"
+    set $ws9  "9:&#xf198; "
+    set $ws10 "10:&#xf868; "
+    # F1-12
+    set $wsf01  "11:f1"
+    set $wsf02  "12:f2"
+    set $wsf03  "13:f3"
+    set $wsf04  "14:f4"
+    set $wsf05  "15:f5"
+    set $wsf06  "16:f6"
+    set $wsf07  "17:f7"
+    set $wsf08  "18:f8"
+    set $wsf09  "19:f9"
+    set $wsf10  "20:f10"
+    set $wsf11  "21:f11"
+    set $wsf12  "22:f12"
+    # switch to workspace
+    bindsym $mod+grave workspace $ws0
+    bindsym $mod+onehalf workspace $ws0
+    bindsym $mod+1 workspace $ws1
+    bindsym $mod+2 workspace $ws2
+    bindsym $mod+3 workspace $ws3
+    bindsym $mod+4 workspace $ws4
+    bindsym $mod+5 workspace $ws5
+    bindsym $mod+6 workspace $ws6
+    bindsym $mod+7 workspace $ws7
+    bindsym $mod+8 workspace $ws8
+    bindsym $mod+9 workspace $ws9
+    bindsym $mod+0 workspace $ws10
+
+    bindsym $mod+F1  workspace $wsf01
+    bindsym $mod+F2  workspace $wsf02
+    bindsym $mod+F3  workspace $wsf03
+    bindsym $mod+F4  workspace $wsf04
+    bindsym $mod+F5  workspace $wsf05
+    bindsym $mod+F6  workspace $wsf06
+    bindsym $mod+F7  workspace $wsf07
+    bindsym $mod+F8  workspace $wsf08
+    bindsym $mod+F9  workspace $wsf09
+    bindsym $mod+F10 workspace $wsf10
+    bindsym $mod+F11 workspace $wsf11
+    bindsym $mod+F12 workspace $wsf12
+
+    # move focused container to workspace
+    bindsym $mod+Shift+grave move container to workspace $ws0
+    bindsym $mod+Shift+1 move container to workspace $ws1
+    bindsym $mod+Shift+2 move container to workspace $ws2
+    bindsym $mod+Shift+3 move container to workspace $ws3
+    bindsym $mod+Shift+4 move container to workspace $ws4
+    bindsym $mod+Shift+5 move container to workspace $ws5
+    bindsym $mod+Shift+6 move container to workspace $ws6
+    bindsym $mod+Shift+7 move container to workspace $ws7
+    bindsym $mod+Shift+8 move container to workspace $ws8
+    bindsym $mod+Shift+9 move container to workspace $ws9
+    bindsym $mod+Shift+0 move container to workspace $ws10
+
+    bindsym $mod+Shift+F1  move container to workspace $wsf01
+    bindsym $mod+Shift+F2  move container to workspace $wsf02
+    bindsym $mod+Shift+F3  move container to workspace $wsf03
+    bindsym $mod+Shift+F4  move container to workspace $wsf04
+    bindsym $mod+Shift+F5  move container to workspace $wsf05
+    bindsym $mod+Shift+F6  move container to workspace $wsf06
+    bindsym $mod+Shift+F7  move container to workspace $wsf07
+    bindsym $mod+Shift+F8  move container to workspace $wsf08
+    bindsym $mod+Shift+F9  move container to workspace $wsf09
+    bindsym $mod+Shift+F10 move container to workspace $wsf10
+    bindsym $mod+Shift+F11 move container to workspace $wsf11
+    bindsym $mod+Shift+F12 move container to workspace $wsf12
+
+# change container layout (stacked, tabbed, toggle split)
+#bindsym $mod+s layout stacking
+bindsym $mod+w layout tabbed
+bindsym $mod+s layout toggle split
+
+    # Make the current focus fullscreen
+bindsym $mod+f fullscreen toggle
+
+# toggle tiling / floating
+bindsym $mod+Shift+space floating toggle
+
+# change focus between tiling / floating windows
+bindsym $mod+space focus mode_toggle
+
+# focus the parent container
+bindsym $mod+a focus parent
+
+# Take webcam picture
+bindsym $mod+z exec python ~/.scripts/cam_capture
+
+# focus the child container
+#bindsym $mod+d focus child
+
+
+new_window pixel 1
+floating_maximum_size 1600 x 800
+
+hide_edge_borders both
+
+assign [class="firefox*"] workspace $ws2
+for_window [title="^test$"] floating enable
+for_window [title="Steam Guard*"] floating enable
+for_window [title="float"] floating enable
+for_window [title="sticky"] sticky enable
+for_window [title="(P|p)review"] floating enable
+for_window [class="firefox*"] floating disabled
+for_window [title="Opening*"] floating enabled
+
+# resize window (you can also use the mouse for that)
+mode "resize" {
+        # These bindings trigger as soon as you enter the resize mode
+
+        # Pressing left will shrink the window’s width.
+        # Pressing right will grow the window’s width.
+        # Pressing up will shrink the window’s height.
+        # Pressing down will grow the window’s height.
+        bindsym $left resize shrink width 10 px or 10 ppt
+        bindsym $down resize grow height 10 px or 10 ppt
+        bindsym $up resize shrink height 10 px or 10 ppt
+        bindsym $right resize grow width 10 px or 10 ppt
+
+        # same bindings, but for the arrow keys
+        bindsym Left resize shrink width 2 px or 2 ppt
+        bindsym Down resize grow height 10 px or 10 ppt
+        bindsym Up resize shrink height 2 px or 2 ppt
+        bindsym Right resize grow width 10 px or 10 ppt
+        # Bigger resize
+        bindsym Shift+Left resize shrink width 20 px or 20 ppt
+        bindsym Shift+Down resize grow height 40 px or 40 ppt
+        bindsym Shift+Up resize shrink height 20 px or 20 ppt
+        bindsym Shift+Right resize grow width 20 px or 20 ppt
+
+        # back to normal: Enter or Escape
+        bindsym Return mode "default"
+        bindsym Escape mode "default"
+}
+
+bindsym $mod+r mode "resize"
+
+
+# Start i3bar to display a workspace bar (plus the system information i3status
+# finds out, if available)
+bar {
+    status_command i3status
+    position top
+    strip_workspace_numbers yes
+    font pango: DejaVu Sans, DejaVuSansMono Nerd Font 12
+    bindsym button4 nop
+    bindsym button5 nop
+    colors {
+        background #1a1a1a
+        statusline #bbbbbb
+    }
+}
+
+# class                  border  backgr.  text  indicator child_border
+client.focused          #444444 #444444 #ffffff #2e9ef4   #222222
+client.focused_inactive #444444 #444444 #ffffff #2e9ef4   #222222
+client.unfocused        #222222 #222222 #aaaaaa #2e9ef4   #111111
+client.urgent           #444444 #444444 #dd0000 #2e9ef4   #111111
+client.placeholder      #444444 #444444 #ffffff #2e9ef4   #111111
+client.background       #444444
