@@ -16,6 +16,7 @@ fi
 export ZSH="${XDG_CONFIG_HOME:-$HOME/.config}/oh-my-zsh"
 
 ZSH_THEME="0undefined"
+ZSH_CUSTOM="${XDG_CONFIG_HOME:-$HOME/.config}/zsh/custom"
 
 # Uncomment the following line to use case-sensitive completion.
 CASE_SENSITIVE="true"
