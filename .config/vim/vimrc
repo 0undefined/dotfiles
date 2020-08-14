@@ -39,6 +39,14 @@ syntax enable
 
 " thematics
 set background=dark
+" Colorscheme overrides, for transparency
+let g:jellybeans_overrides = { 'background': {
+\ 'guibg':      'none',
+\ 'ctermbg':    'none',
+\ '256ctermbg': 'none',
+\}}
+let g:jellybeans_use_term_italics = 1
+
 colorscheme jellybeans
 "set listchars=space:·\,eol:¬
 set listchars=
