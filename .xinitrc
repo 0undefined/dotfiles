@@ -1,7 +1,6 @@
 systemctl --user import-environment DISPLAY
-feh --no-fehbg --bg-scale ~/pictures/bg2.png
-# xrdb -m $XDEFAULTS
+feh --no-fehbg --bg-scale ~/pictures/background.png
 dunst &
 xcompmgr &
-# exec i3
-exec dwm
+setxkbmap -option compose:caps &
+exec i3
