@@ -11,7 +11,7 @@ append_if_nz() {
 git_status() {
   local STATUS CURRENT_COMMIT BRANCH AHEAD BEHIND STAGED CONFLICT CHANGHED DELETED UNTRACKED
 
-  STATUS="$(git status --porcelain=v2 --ignore-submodules --branch 2> /dev/null)"
+  STATUS="$(git --no-optional-locks status --porcelain=v2 --ignore-submodules --branch 2> /dev/null)"
 
   [ $? = 0 ] || return
 
