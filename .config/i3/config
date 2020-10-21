@@ -13,27 +13,27 @@ set $down j
 set $up k
 set $right l
 
-font pango: DejaVuSans Mono Nerd Font Mono 12
+font pango: DejaVuSansMono Nerd Font Mono 12
 
 
 ### Output configuration
 
 # Default wallpaper (more resolutions are available in /usr/share/sway/)
-exec_always feh --bg-scale $HOME/pictures/bg2.png
+exec_always feh --no-fehbg --bg-scale $HOME/pictures/background.png
 
 # Use Mouse+$mod to drag floating windows to their wanted position
 floating_modifier $mod
 
 ### Key bindings
     # start a terminal
-    #bindsym $mod+Return exec $term -f "DejaVuSansMono Nerd Font Mono:pixelsize=16"
     bindsym $mod+Return exec $term
-    bindsym $mod+e exec urxvt -bg '[50]#000000' -g 220x40 -t float -e nnn
+    bindsym $mod+e exec $term -A 0.2 -g 120x40 -t float -e nnn
     bindsym $mod+Shift+Return exec $term -t float
     bindsym $mod+Shift+p exec $term -f ":pixelsize=24"
     bindsym $mod+Shift+o exec $term -f ":pixelsize=18"
     bindsym $mod+p exec feh -^ float_sticky -R 15 https://www.cafeen.org/test.php
-    bindsym Print exec import -window root -display :0 ~/scr.png && xclip -selection clip -t image/png ~/scr.png
+    bindsym Print exec import -window root -display :0 ~/screenshot.png && xclip -selection clip -t image/png ~/screenshot.png
+    bindsym $mod+z exec zathura
     bindsym $mod+c exec exec $term -title float -e fsharpi --consolecolors+ --nologo --use:.scripts/fsharpinit.fsx
     bindsym $mod+Shift+v exec exec $term -t float -e vim
 
@@ -51,17 +51,18 @@ floating_modifier $mod
     bindsym XF86MonBrightnessUp exec brightnessctl s 10%+
 
     # Volume control
-
     bindsym XF86AudioLowerVolume exec pactl set-sink-volume $(pactl info | grep 'Default Sink' | sed -Ee 's/^.*: (.*)$/\1/g') -5%
     bindsym XF86AudioRaiseVolume exec pactl set-sink-volume $(pactl info | grep 'Default Sink' | sed -Ee 's/^.*: (.*)$/\1/g') +5%
     bindsym XF86AudioMute exec pactl set-sink-mute $(pactl info | grep 'Default Sink' | sed -Ee 's/^.*: (.*)$/\1/g') toggle
 
+    bindsym $mod+w exec notify-send 'Weather' "$(weather)"
+    bindsym $mod+c exec notify-send 'Calendar' "$(cal -wm)"
+
 
 # Your preferred application launcher
 bindsym $mod+d exec dmenu_run -i -q -fn 'DejaVuSansMono Nerd Font Mono'
-#bindsym $mod+d exec rofi -show run -theme Pop-Dark
 # Lock your computer
-bindsym $mod+x exec i3lock -i $HOME/pictures/lock.png -t -f -e
+bindsym $mod+x exec i3lock -c 000000 -i $HOME/pictures/lock.png -t -f -e
 
 # Drag floating windows by holding down $mod and left mouse button.
 # Resize them with right mouse button + $mod.
@@ -189,8 +190,8 @@ bindsym $mod+v split v
 
 # change container layout (stacked, tabbed, toggle split)
 #bindsym $mod+s layout stacking
-bindsym $mod+w layout tabbed
-bindsym $mod+s layout toggle split
+#bindsym $mod+w layout tabbed
+#bindsym $mod+s layout toggle split
 
     # Make the current focus fullscreen
 bindsym $mod+f fullscreen toggle
@@ -233,21 +234,22 @@ mode "resize" {
         # Pressing right will grow the window’s width.
         # Pressing up will shrink the window’s height.
         # Pressing down will grow the window’s height.
-        bindsym $left resize shrink width 10 px or 10 ppt
-        bindsym $down resize grow height 10 px or 10 ppt
-        bindsym $up resize shrink height 10 px or 10 ppt
-        bindsym $right resize grow width 10 px or 10 ppt
+        bindsym $left  resize shrink width  10 px or 10 ppt
+        bindsym $down  resize grow   height 10 px or 10 ppt
+        bindsym $up    resize shrink height 10 px or 10 ppt
+        bindsym $right resize grow   width  10 px or 10 ppt
 
         # same bindings, but for the arrow keys
-        bindsym Left resize shrink width 2 px or 2 ppt
-        bindsym Down resize grow height 10 px or 10 ppt
-        bindsym Up resize shrink height 2 px or 2 ppt
-        bindsym Right resize grow width 10 px or 10 ppt
+        bindsym Left  resize shrink width   2 px or  2 ppt
+        bindsym Down  resize grow   height 10 px or 10 ppt
+        bindsym Up    resize shrink height  2 px or  2 ppt
+        bindsym Right resize grow   width  10 px or 10 ppt
+
         # Bigger resize
-        bindsym Shift+Left resize shrink width 20 px or 20 ppt
-        bindsym Shift+Down resize grow height 40 px or 40 ppt
-        bindsym Shift+Up resize shrink height 20 px or 20 ppt
-        bindsym Shift+Right resize grow width 20 px or 20 ppt
+        bindsym Shift+Left  resize shrink width  20 px or 20 ppt
+        bindsym Shift+Down  resize grow   height 40 px or 40 ppt
+        bindsym Shift+Up    resize shrink height 20 px or 20 ppt
+        bindsym Shift+Right resize grow   width  20 px or 20 ppt
 
         # back to normal: Enter or Escape
         bindsym Return mode "default"

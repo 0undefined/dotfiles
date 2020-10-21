@@ -1,6 +1,5 @@
 # vim: ft=zsh: ts=2: sts=2: expandtab
 append_if_nz() {
-  # echo " -- $1 --"
   if [[ "$1" == "0" || "$1" == "" ]]; then
     echo -n ""
   else
@@ -19,7 +18,7 @@ git_status() {
   BRANCH=$(echo "$STATUS" | awk '/^# branch.head/{print $3}')
   AHEAD=$(append_if_nz "$(echo "$STATUS" | sed -n '/^# branch.ab/p' | sed -Ee 's/^.*\+([0-9]+).*/\1/g')" "\u2191")
   BEHIND=$(append_if_nz "$(echo "$STATUS" | sed -n '/^# branch.ab/p' | sed -Ee 's/^.*-([0-9]+).*/\1/g')" "\u2193")
-  STAGED=$(append_if_nz "$(echo "$STATUS" | sed -En '/^[0-9]+ (A|M). /p' | wc -l)" "+" "046") # green
+  STAGED=$(append_if_nz "$(echo "$STATUS" | sed -En '/^[0-9]+ (A|M|D). /p' | wc -l)" "+" "046") # green
   CONFLICT=$(append_if_nz "$(echo "$STATUS" | sed -En '/^u /p' | wc -l)" "!" "009") # red
   CHANGED=$(append_if_nz "$(echo "$STATUS" | sed -En '/^[0-9]+ .M /p' | wc -l)" "~" "081") # cyan
   RENAMED=$(append_if_nz "$(echo "$STATUS" | sed -En '/^[0-9]+ (R.|.R) /p' | wc -l)" "" "226") # YELLOW

@@ -1,0 +1,15 @@
+#!/usr/bin/env bash
+set -e
+
+updates=$(pacman -Qu | sed '/\[ignored\]$/d')
+
+case $BLOCK_BUTTON in
+  1) ;&  # fallthrough
+  3) if [ -n "${updates}" ]; then
+       notify-send "Available updates" "$updates"
+     else
+       notify-send "Available updates" "No available updates"
+     fi;;
+esac
+
+[ -n "$updates" ] && echo $(echo "${updates}" | wc -l) || exit 0

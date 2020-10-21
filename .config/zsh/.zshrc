@@ -1,10 +1,11 @@
-# ~/.zshrc
+# zshrc
 
 export GPG_TTY=$(tty)
 
 # If not running interactively, don't do anything
 [[ $- != *i* ]] && return
 
+# Add [username@hostname] prefix to prompt when its ssh
 if [ "$TERM" = "linux" ]; then
   PROMPT='%(?..(%?%) )'
   [ -n "$SSH_CLIENT" ] && PROMPT+="[%n@%M] "
@@ -25,7 +26,7 @@ CASE_SENSITIVE="true"
 DISABLE_AUTO_UPDATE="true"
 
 # Uncomment the following line to automatically update without prompting.
-DISABLE_UPDATE_PROMPT="true"
+DISABLE_UPDATE_PROMPT="false"
 
 # Uncomment the following line to change how often to auto-update (in days).
 export UPDATE_ZSH_DAYS=31
@@ -36,33 +37,6 @@ DISABLE_MAGIC_FUNCTIONS=true
 # Uncomment the following line to disable auto-setting terminal title.
 DISABLE_AUTO_TITLE="true"
 
-# Uncomment the following line to enable command auto-correction.
-# ENABLE_CORRECTION="true"
-
-# Uncomment the following line to display red dots whilst waiting for completion.
-#COMPLETION_WAITING_DOTS="true"
-
-# Uncomment the following line if you want to disable marking untracked files
-# under VCS as dirty. This makes repository status check for large repositories
-# much, much faster.
-# DISABLE_UNTRACKED_FILES_DIRTY="true"
-
-# Uncomment the following line if you want to change the command execution time
-# stamp shown in the history command output.
-# You can set one of the optional three formats:
-# "mm/dd/yyyy"|"dd.mm.yyyy"|"yyyy-mm-dd"
-# or set a custom format using the strftime function format specifications,
-# see 'man strftime' for details.
-# HIST_STAMPS="mm/dd/yyyy"
-
-# Would you like to use another custom folder than $ZSH/custom?
-# ZSH_CUSTOM=/path/to/new-custom-folder
-
-# Which plugins would you like to load?
-# Standard plugins can be found in ~/.oh-my-zsh/plugins/*
-# Custom plugins may be added to ~/.oh-my-zsh/custom/plugins/
-# Example format: plugins=(rails git textmate ruby lighthouse)
-# Add wisely, as too many plugins slow down shell startup.
 #plugins=(git)
 
 source $ZSH/oh-my-zsh.sh
@@ -91,12 +65,16 @@ setopt hist_reduce_blanks
 setopt no_share_history
 setopt no_histverify
 
+
 autoload -Uz compinit
 compinit -d ~/.cache/zcompdump-$ZSH_VERSION
-
 autoload -Uz promptinit
 promptinit
 
+zstyle ':completion:*' menu select
+zmodload zsh/complist
+
+bindkey -v
 export KEYTIMEOUT=1
 set -o vi
 
@@ -122,27 +100,31 @@ autoload -Uz edit-command-line
 zle -N edit-command-line
 bindkey -M vicmd ' ' edit-command-line
 
+bindkey -v '^?' backward-delete-char
+
 bindkey "^e" end-of-line
 bindkey "^a" beginning-of-line
 bindkey -M vicmd "^e" end-of-line
 bindkey -M vicmd "^a" beginning-of-line
+bindkey "" beginning-of-line
+bindkey "" end-of-line
 
 bindkey "${terminfo[khome]}" beginning-of-line
 bindkey "${terminfo[kend]}"  end-of-line
 bindkey "^[[3~"              delete-char
 bindkey "^[3;5~"             delete-char
+bindkey "^[[P"               delete-char
 bindkey "^[[1;5C"            forward-word
 bindkey "^[[1;5D"            backward-word
 
-autoload -U    up-line-or-beginning-search
-autoload -U    down-line-or-beginning-search
-zle -N         up-line-or-beginning-search
-zle -N         down-line-or-beginning-search
+autoload -U up-line-or-beginning-search
+autoload -U down-line-or-beginning-search
+zle -N      up-line-or-beginning-search
+zle -N      down-line-or-beginning-search
 bindkey "^[A" up-line-or-beginning-search
-bindkey "^[OA" up-line-or-beginning-search
 bindkey "^[B" down-line-or-beginning-search
+bindkey "^[OA" up-line-or-beginning-search
 bindkey "^[OB" down-line-or-beginning-search
-
 
 ## Handy functions
 upload () {
@@ -196,6 +178,13 @@ calcgrade () {
     fi
 }
 
+function screengrab() {
+  local OUT=screengrab.gif
+  local SIZE=$1
+  local POS=$2
+  ffmpeg -f x11grab -r 20 -s ${SIZE} -i :0.0+${POS} -r 20 out.gif
+}
+
 fr () {
   which futhark > /dev/null
   if [ ! -z $? ]; then
@@ -206,9 +195,6 @@ fr () {
 
 ## Aliases
 alias :q='exit'
-alias cgpu='sshpass -e ssh -l qgt268 ku-gpu'
-alias fsharpi='fsharpi --nologo'
-alias fsharpc='fsharpc --nologo --standalone'
 alias gdb='gdb -q'
 alias glog2="git log --graph --abbrev-commit --decorate --format=format:'%Cgreen%h%C(reset) [%G?] %C(white)%s%C(reset) %C(dim white)- %an%C(reset)%Cred%d%C(reset)' --all"
 alias glog='git log --pretty="%Cgreen%H%Creset [%G?] %cn: %s %Cred%d%Creset"'
@@ -216,19 +202,17 @@ alias ls='ls --color=auto'
 alias mutt='neomutt'
 alias pbcopy='xclip -selection clipboard -i'
 alias pbpaste='xclip -selection clipboard -o'
-alias push='git push && mpg123 ~/Downloads/Mario-coin-sound.mp3'
+alias push='git push && mpgv ~/downloads/mario_power_up.mp3'
 alias s='vim $(fzf)'
 alias scan='sudo iwlist wlp3s0 scan > /dev/null'
 alias v='echo -ne "\e[1 q" && vim --servername vim'
-alias less='less -R'
+alias ptop="ps -o pid,user,size,pcpu,command --sort size cx"
 
 ## Do before dropping into shell
-source ~/.secrets/sshpass
-
 BANNERFILE=~/.config/texts/todo.md
 
 if [[ $(tput cols) -gt 140 ]]; then
-   pr -mtW 140 $BANNERFILE ~/.config/texts/setsail
+  pr -mtW 140 $BANNERFILE ~/.config/texts/setsail
 else
-    cat $BANNERFILE
+  cat $BANNERFILE
 fi

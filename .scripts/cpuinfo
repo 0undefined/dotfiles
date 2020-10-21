@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+set -e
+
+# Load
+sed -Ee 's/^([0-9]+\.[0-9]+) .*/[\1  /g' /proc/loadavg | tr -d '\n'
+
+# Thermals
+awk '{s+=$1}END{printf "%.1f°]", s / (1000*NR)}' /sys/class/thermal/thermal_zone*/temp

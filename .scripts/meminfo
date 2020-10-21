@@ -1,0 +1,2 @@
+#!/usr/bin/env bash
+free -h | awk '/Mem/{print "[" $3 " RAM " $2 "]" }' | tr -d '\n'
