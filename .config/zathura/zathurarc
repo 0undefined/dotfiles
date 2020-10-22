@@ -1,4 +1,4 @@
 set recolor true
-set recolor-darkcolor \#BBDDEE
-set recolor-lightcolor \#020100
+set recolor-darkcolor   \#EEE7DD
+set recolor-lightcolor  \#121110
 set selection-clipboard clipboard
