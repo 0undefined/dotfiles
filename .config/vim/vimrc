@@ -1,10 +1,11 @@
+runtime! archlinux.vim
+scriptencoding utf-8
+
 set directory=$XDG_CACHE_HOME/vim,~/,/tmp
 set backupdir=$XDG_CACHE_HOME/vim,~/,/tmp
 set viminfo+=n$XDG_CACHE_HOME/vim/viminfo
 let $MYVIMRC="$XDG_CONFIG_HOME/vim/vimrc"
-set runtimepath=$XDG_CONFIG_HOME/vim,$XDG_CONFIG_HOME/vim/after,$VIM,$VIMRUNTIME
-runtime! archlinux.vim
-scriptencoding utf-8
+set runtimepath=$XDG_CONFIG_HOME/vim,$XDG_CONFIG_HOME/vim/after,$VIM,$VIMRUNTIME,$VIM/vimfiles,$VIM/vimfiles/after
 
 " behaviour
 set history=200
@@ -17,13 +18,12 @@ set nocompatible
 set backspace=2
 set incsearch
 set formatoptions+=tcroqn2bmj
-"set formatoptions+=1cjmnoqrw
-"set formatoptions+=2acjnoqrtw
-set relativenumber
 set number
 
 " Enable mouse support
 set mouse=a
+
+set clipboard=unnamedplus
 
 " tabs
 set expandtab
@@ -48,8 +48,7 @@ let g:jellybeans_overrides = { 'background': {
 let g:jellybeans_use_term_italics = 1
 
 colorscheme jellybeans
-"set listchars=space:·\,eol:¬
-set listchars=
+set listchars=tab:\ \ >,extends:…,precedes:…
 set list
 
 
@@ -62,13 +61,7 @@ set fileencoding=utf-8
 set encoding=utf-8
 set fileformats=unix
 
-set viminfofile=${XDG_DATA_HOME:-$HOME/.local/share}/viminfo
-
 set grepprg=grep\ -nH\ $*
-
-"set statusline+=%#warningmsg#
-"set statusline+=%{SyntasticStatuslineFlag()}
-"set statusline+=%*
 
 let g:syntastic_always_populate_loc_list = 1
 let g:syntastic_auto_loc_list            = 1
@@ -100,26 +93,37 @@ let g:vimtex_view_method = 'zathura'
 
 function! Synctex()
   " remove 'silent' for debugging
-  execute "silent !mv -u latex.out/" . bufname('%')[:-5] . ".synctex.gz ."
-  execute "silent !zathura --synctex-forward " . line('.') . ":" . col('.') . ":" . bufname('%') . " " . bufname('%')[:-5] . ".pdf"
+  execute "silent !mv -u latex.out/" . expand('%:t:r') . ".synctex.gz ."
+  execute "silent !zathura --synctex-forward " . line('.') . ":" . col('.') . ":" . bufname('%') . " " . expand('%:t:r') . ".pdf"
   redraw!
 endfunction
 
-map <F5> :make<CR>
-au BufNewFile,BufRead *.fo setlocal ft=fasto
 au BufNewFile,BufRead /tmp/[a-zA-Z0-9]\+/ setlocal ft=sh
 
 " Remove trailing cancer on write
 autocmd BufWritePre * %s/\s\+$//e
 autocmd BufWritePost *.tex !latexrun --bibtex-cmd="biber" --latex-args="-synctex=1" %
 
+autocmd BufWritePost *.md !cmark-gfm -e footnotes -e table -e strikethrough -e autolink -e tagfilter -e tasklist --unsafe % > %:r.html
+
 set makeprg=GCC_COLORS=\ make
 
 vnoremap // y/\V<C-R>"<CR>
+
+match ErrorMsg '\%>80v.\+'
+match ErrorMsg '\( \|	\)\+$'
+
+map <F5> :make<CR>
 
 map! <ESC>[1;5A <C-Up>
 map! <ESC>[1;5B <C-Down>
 map! <ESC>[1;5C <C-Right>
 map! <ESC>[1;5D <C-Left>
+map  <ESC>[1;5A <C-Up>
+map  <ESC>[1;5B <C-Down>
+map  <ESC>[1;5C <C-Right>
+map  <ESC>[1;5D <C-Left>
+
+map <ScrollWheelUp> <C-Y>
 
 autocmd VimEnter * silent !echo -ne "\e[1 q"
