@@ -4,6 +4,7 @@
 export PATH=$PATH:$HOME/.scripts
 
 export EDITOR="vim"
+export VISUAL="vim"
 export TERMINAL="st"
 export BROWSER="firefox-developer-edition"
 export READER="zathura"
@@ -36,7 +37,7 @@ export RUSTUP_HOME="${XDG_CACHE_HOME:-$HOME/.cache}/rustup"
 export CARGO_HOME="${XDG_CACHE_HOME:-$HOME/.cache}/cargo"
 export KUBECONFIG="${XDG_CACHE_HOME:-$HOME/.cache}/kube/config"
 
-export VIMINIT="source ${XDG_CONFIG_HOME:-$HOME/.config}/vimrc"
+export VIMINIT="source ${XDG_CONFIG_HOME:-$HOME/.config}/vim/vimrc"
 
 # Preferences
 export LESS=-R
