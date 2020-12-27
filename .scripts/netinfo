@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/usr/bin/env sh
 
 netstatus="$(awk '{
       n = split(FILENAME, a, "/")

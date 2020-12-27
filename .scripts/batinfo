@@ -1,8 +1,8 @@
-#!/usr/bin/env bash
+#!/usr/bin/env sh
 
 set -e
 
-status=$(acpi -abi) # get battery and adapter info
+status="$(acpi -abi)" # get battery and adapter info
 
 case $BLOCK_BUTTON in
   3) notify-send "Battery status" "$status" ;;
@@ -10,7 +10,7 @@ case $BLOCK_BUTTON in
 	5) brightnessctl -q s 10%- ;;
 esac
 
-power=$(echo $status | awk '/Battery/{s+=$4}; END{printf "%.1f%%", s/NR}')
+power=$(echo "${status}" | awk '/Battery [0-9]+: [A-Z]/{s+=$4;c++}; END{printf "%.1f%%", s/c}')
 
 icon='?'
 if [[ -z $(echo $status | sed -n '/on-line/p') ]]; then
@@ -30,4 +30,4 @@ else
   icon='\uf583'
 fi
 
-echo -ne "$icon $power"
+echo -e "$icon $power"
