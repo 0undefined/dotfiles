@@ -125,5 +125,6 @@ map  <ESC>[1;5C <C-Right>
 map  <ESC>[1;5D <C-Left>
 
 map <ScrollWheelUp> <C-Y>
+map <ScrollWheelDown> <C-E>
 
 autocmd VimEnter * silent !echo -ne "\e[1 q"
