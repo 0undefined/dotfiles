@@ -5,7 +5,7 @@ set -e
 status="$(acpi -abi)" # get battery and adapter info
 
 case $BLOCK_BUTTON in
-  3) notify-send "Battery status" "$status" ;;
+  1) notify-send -t $((15 * 1000)) --urgency=low "Battery status" "$status" ;;
 	4) brightnessctl -q s 10%+ ;;
 	5) brightnessctl -q s 10%- ;;
 esac

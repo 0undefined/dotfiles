@@ -20,7 +20,7 @@ function add_connected_address() {
 }
 
 case $BLOCK_BUTTON in
-  3) notify-send "Internet connection" "$(add_connected_address)" ;;
+  1) notify-send --urgency=low "Internet connection" "$(add_connected_address)" ;;
 esac
 
 #echo "$(echo -e "$netstatus" | sed -En '/up$/p')"

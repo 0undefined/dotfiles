@@ -1,6 +1,28 @@
 #!/usr/bin/env sh
 set -e
 
+case $BLOCK_BUTTON in
+  1) notify-send --urgency=low       \
+        "Process status"             \
+        "$(ps -eo pid,pcpu,size,comm \
+           | sort -rnk 3             \
+           | awk '{printf "% 8s% 8s% 8s ", $1, $2, $3;
+                   $1="";$2="";$3="";
+                   print $0; c++}
+                  c>10 {exit}')"
+        ;;
+  3) notify-send --urgency=low      \
+        "Process status"            \
+        "$(ps -eo pid,pcpu,size,cmd \
+           | sort -rnk 3            \
+           | cut -b -45             \
+           | awk '{printf "% 8s% 8s% 8s ", $1, $2, $3;
+                   $1="";$2="";$3="";
+                   print $0; c++}
+                  c>10 {exit}')"
+        ;;
+esac
+
 # Load
 sed -Ee 's/^([0-9]+\.[0-9]+) .*/[\1  /g' /proc/loadavg | tr -d '\n'
 

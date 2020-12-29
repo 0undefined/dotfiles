@@ -1,3 +1,13 @@
 #!/usr/bin/env sh
 set -e
+
+case $BLOCK_BUTTON in
+  1) notify-send --urgency=low \
+        "Memory status"        \
+        "$(free -h | \
+           awk '/total/   {printf "%15s%10s%10s\n",     $1, $2, $3}
+                /Mem|Swap/{printf "%-5s%10s%10s%10s\n", $1, $2, $3, $4}')"
+          ;;
+esac
+
 free -h | awk '/Mem/{print "[" $3 " RAM " $2 "]" }'
