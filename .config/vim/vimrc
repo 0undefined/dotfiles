@@ -19,6 +19,7 @@ set backspace=2
 set incsearch
 set formatoptions+=tcroqn2bmj
 set number
+set nowrap
 
 " Enable mouse support
 set mouse=a
@@ -32,13 +33,19 @@ set softtabstop=2
 set shiftwidth=2
 set smartindent
 set textwidth=80
-set wrap
+
+" netrw settings
+let g:netrw_banner=0
+let g:netrw_browse_split=1
+let g:netrw_altv=4
 
 " theme
 syntax enable
 
 " thematics
 set background=dark
+set colorcolumn=81
+
 " Colorscheme overrides, for transparency
 let g:jellybeans_overrides = { 'background': {
 \ 'guibg':      'none',
@@ -47,9 +54,19 @@ let g:jellybeans_overrides = { 'background': {
 \}}
 let g:jellybeans_use_term_italics = 1
 
-colorscheme jellybeans
+" Spaceduck stuff
+if exists('+termguicolors')
+  let &t_8f = "\<Esc>[38;2;%lu;%lu;%lum"
+  let &t_8b = "\<Esc>[48;2;%lu;%lu;%lum"
+  set termguicolors
+endif
+
+"colorscheme jellybeans
+colorscheme spaceduck
+"set listchars=space:·\,eol:¬
 set listchars=tab:\ \ >,extends:…,precedes:…
 set list
+set tags+=./tags;/
 
 
 " adding pathogen
@@ -102,13 +119,16 @@ au BufNewFile,BufRead /tmp/[a-zA-Z0-9]\+/ setlocal ft=sh
 
 " Remove trailing cancer on write
 autocmd BufWritePre * %s/\s\+$//e
-autocmd BufWritePost *.tex !latexrun --bibtex-cmd="biber" --latex-args="-synctex=1" %
+autocmd BufWritePost *.tex !latexrun --bibtex-cmd="biber" --latex-args="-synctex=1 -interaction=nonstopmode" %
 
 autocmd BufWritePost *.md !cmark-gfm -e footnotes -e table -e strikethrough -e autolink -e tagfilter -e tasklist --unsafe % > %:r.html
+
+autocmd BufReadPre *.asm !set ft=nasm
 
 set makeprg=GCC_COLORS=\ make
 
 vnoremap // y/\V<C-R>"<CR>
+vnoremap (( <ESC>`>a)<ESC>`<i(<ESC>
 
 match ErrorMsg '\%>80v.\+'
 match ErrorMsg '\( \|	\)\+$'
@@ -125,6 +145,10 @@ map  <ESC>[1;5C <C-Right>
 map  <ESC>[1;5D <C-Left>
 
 map <ScrollWheelUp> <C-Y>
-map <ScrollWheelDown> <C-E>
 
-autocmd VimEnter * silent !echo -ne "\e[1 q"
+imap <C-E> <ESC>A
+imap <C-A> <ESC>I
+
+" Preserve clipboard
+autocmd VimLeave * call system("xsel -ib", getreg())
+autocmd VimSuspend * call system("xsel -ib", getreg())
