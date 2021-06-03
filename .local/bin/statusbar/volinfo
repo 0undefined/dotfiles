@@ -1,0 +1,13 @@
+#!/usr/bin/env sh
+
+ARG=${1:-$BLOCK_BUTTON}
+
+case $ARG in
+  1) pamixer -t   && sigdwmblocks 4;;
+  4) pamixer -i 1 && sigdwmblocks 4;;
+  5) pamixer -d 1 && sigdwmblocks 4;;
+esac
+
+VOL=$(pamixer --get-volume)
+
+pamixer --get-mute >/dev/null && echo -ne "\x0c\ufa80${VOL}\x0b" || echo -ne "\ufa7d${VOL}"

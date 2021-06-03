@@ -19,16 +19,16 @@ function add_connected_address() {
   IFS=$TMPIFS
 }
 
-case $BLOCK_BUTTON in
+ARG=${1:-$BLOCK_BUTTON}
+
+case $ARG in
   1) notify-send --urgency=low "Internet connection" "$(add_connected_address)" ;;
 esac
 
-#echo "$(echo -e "$netstatus" | sed -En '/up$/p')"
-#echo ======
-
 if [ -z "$(echo -e "${netstatus}" | sed -En '/up$/p' | tr -d '\n')" ]; then
-  echo -n ''
+  echo -en '\x0c'
 else
-  echo -n "${netstatus}" | sed -En 's/^(w[^ ]+).*up//p;s/^(e[^ ]+).*up//p'
+  echo -n "${netstatus}" | sed -En 's/^(w[^ ]+).*up//p;s/^(e[^ ]+).*up/\x0d/p'
 fi
 
+echo -en '\x0b'
