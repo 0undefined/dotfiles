@@ -1,5 +1,0 @@
-#!/bin/sh
-
-echo ${1%.pdf}
-zathura --fork -x "vim --servername ${1%.pdf} -c \"let g:syncpdf='${1%.pdf}'\" --remote +%{line} %{input}" $*
-#zathura --fork -x "vim --servername vim -c \"let g:syncpdf='${1:0:5}'\" --remote +%{line} %{input}" $1
