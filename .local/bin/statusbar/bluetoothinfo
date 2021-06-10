@@ -1,0 +1,33 @@
+#!/usr/bin/env bash
+
+declare -a states
+
+ARG=${1:-$BLOCK_BUTTON}
+
+# Get state and exit if its soft/hard blocked
+for A in $(rfkill -o TYPE,SOFT,HARD | awk '/bluetooth/{print $2 "\n" $3}'); do
+	[ $A == "blocked" ] && exit 0
+done
+
+DAEMONSTATUS="$(systemctl is-active bluetooth.service)"
+if [ "$DAEMONSTATUS" == "inactive" ]; then
+	echo -en '\x0c\uf5b1\x0b'
+	case $ARG in
+		1) systemctl start bluetooth.service;;
+	esac
+else
+	CONNECTED="$(bluetoothctl info | awk '/Name/{$1=""; print $0}')"
+	if [ -z "${CONNECTED}" ]; then
+		# Not connected
+		echo -ne '\x0f\uf5b0\x0b'
+		case $ARG in
+			1) notify-send 'Bluetooth status' "Disconnected\n$(bluetoothctl paired-devices)"
+		esac
+	else
+		echo -ne '\x0d\uf5ae\x0b'
+		case $ARG in
+			1) notify-send 'Bluetooth status' "Connected to ${CONNECTED}";;
+			3) bluetoothctl disconnect
+		esac
+	fi
+fi

@@ -1,15 +1,21 @@
-#!/usr/bin/env sh
+#!/usr/bin/env bash
 set -e
 
 updates=$(pacman -Qu | sed '/\[ignored\]$/d')
+COUNT=$(echo -n "${updates}" | wc -l)
 
-case $BLOCK_BUTTON in
-  1) ;&  # fallthrough
-  3) if [ -n "${updates}" ]; then
-       notify-send -t $((1000 * 20)) "Available updates" "$updates"
-     else
-       notify-send "Available updates" "No available updates"
-     fi;;
+ARG=${1:-$BLOCK_BUTTON}
+
+case $ARG in
+	1) if [ -n "${updates}" ]; then
+			 notify-send -t $((1000 * 20)) "Available updates (${COUNT})" "$updates"
+		else
+			 notify-send "Available updates" "No available updates"
+		fi;;
 esac
 
-[ -n "$updates" ] && echo $(echo "${updates}" | wc -l) || exit 0
+[ -z "${updates}" ] && exit
+
+[[ "${updates}" =~ .*linux.* ]] && echo -ne '\x0d' || echo -ne '\x0e'
+[ "$COUNT" -gt 0 ] && echo -ne "$COUNT" || exit 0
+echo -ne '\x0b'

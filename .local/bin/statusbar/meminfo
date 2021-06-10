@@ -1,13 +1,19 @@
-#!/usr/bin/env sh
+#!/usr/bin/env bash
 set -e
 
-case $BLOCK_BUTTON in
-  1) notify-send --urgency=low \
-        "Memory status"        \
-        "$(free -h | \
-           awk '/total/   {printf "%15s%10s%10s\n",     $1, $2, $3}
-                /Mem|Swap/{printf "%-5s%10s%10s%10s\n", $1, $2, $3, $4}')"
-          ;;
+# For compatability with older dwmblocks
+ARG=${1:-$BLOCK_BUTTON}
+
+case $ARG in
+	1) notify-send --urgency=low \
+	   "Memory status"        \
+	   "$(free -h | \
+	      awk '/total/   {printf "%15s%10s%10s\n",     $1, $2, $3}
+	           /Mem|Swap/{printf "%-5s%10s%10s%10s\n", $1, $2, $3, $4}')"
+	;;
 esac
 
-free -h | awk '/Mem/{print "[" $3 " RAM " $2 "]" }'
+MEM=( $(free -h | awk '/Mem/{print $3 " " $2}') )
+#USAGE=`(( $(echo "${MEM[0]::-2} > 17" | bc -l) )) && echo "\x0c${MEM[0]}\x0b" || echo "${MEM[0]}"`
+
+echo -e "[${MEM[0]} \x11\x0b ${MEM[1]}]"

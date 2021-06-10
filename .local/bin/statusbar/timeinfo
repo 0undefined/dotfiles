@@ -1,15 +1,16 @@
-#!/usr/bin/env sh
+#!/usr/bin/env bash
 
 ARG=${1:-$BLOCK_BUTTON}
 
 case $ARG in
-  1) notify-send --urgency=low \
-        "Calendar"        \
-        "$(cal -w -m)"
-          ;;
-  3) notify-send --urgency=low \
-        "Weather"        \
-        "$(weather)"
-          ;;
-      esac
+	1) notify-send --urgency=low \
+	     "Calendar"        \
+	     "$(cal -w -m)"
+	;;
+	3) notify-send --urgency=low \
+	     "Weather"        \
+	     "$(weather)"
+	;;
+esac
+
 date +'%F %R'

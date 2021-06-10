@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+
+ARG="${1:-$BLOCK_BUTTON}"
+
+[ ! -z "${BLOCK_BUTTON}" ] && notify-send 'Running containers' "$(docker ps --format '{{.Names}}')" && exit
+
+systemctl is-active docker >/dev/null && echo -en "\uf308$(docker ps -q | wc -l)"

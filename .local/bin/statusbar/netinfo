@@ -1,4 +1,4 @@
-#!/usr/bin/env sh
+#!/usr/bin/env bash
 
 netstatus="$(awk '{
       n = split(FILENAME, a, "/")
@@ -6,29 +6,31 @@ netstatus="$(awk '{
     }' /sys/class/net/[ew]*/operstate | sort -k 2)"
 
 function add_connected_address() {
-  TMPIFS=$IFS
+  TMPIFS="${IFS}"
   IFS='
 '
   for line in $netstatus; do
     device=$(echo $line | awk '{print $1}')
     address=$(ip addr show $device | sed -En 's/inet ([0-9\.]+).*/\1/p')
     # Append Wifi AP if connected
-    [ -n "$address" ] && address=$address" ("$(iwgetid -r)")"
-    echo $line $address
+    AP_NAME="$(iwgetid -r)"
+    [ -n "${address}" ] && [ -n "${AP_NAME}" ] && address="${address} (${AP_NAME})"
+    echo "${line} ${address}"
   done
-  IFS=$TMPIFS
+  IFS="${TMPIFS}"
 }
 
 ARG=${1:-$BLOCK_BUTTON}
 
 case $ARG in
-  1) notify-send --urgency=low "Internet connection" "$(add_connected_address)" ;;
+	1) notify-send --urgency=low "Internet connection" "$(add_connected_address)" ;;
 esac
 
 if [ -z "$(echo -e "${netstatus}" | sed -En '/up$/p' | tr -d '\n')" ]; then
-  echo -en '\x0c'
+	echo -en '\x0c\uf701'
 else
-  echo -n "${netstatus}" | sed -En 's/^(w[^ ]+).*up//p;s/^(e[^ ]+).*up/\x0d/p'
+	echo -en '\x0d'
+	echo -en $(echo -n "${netstatus}" | sed -En 's/^(w[^ ]+).*up/\\uf1eb/p;s/^(e[^ ]+).*up/\\uf700/p')
 fi
 
 echo -en '\x0b'

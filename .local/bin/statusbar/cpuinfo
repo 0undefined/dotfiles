@@ -1,30 +1,38 @@
-#!/usr/bin/env sh
+#!/usr/bin/env bash
 set -e
 
-case $BLOCK_BUTTON in
-  1) notify-send --urgency=low       \
-        "Process status"             \
-        "$(ps -eo pid,pcpu,size,comm \
-           | sort -rnk 3             \
-           | awk '{printf "% 8s% 8s% 8s ", $1, $2, $3;
-                   $1="";$2="";$3="";
-                   print $0; c++}
-                  c>10 {exit}')"
-        ;;
-  3) notify-send --urgency=low      \
-        "Process status"            \
-        "$(ps -eo pid,pcpu,size,cmd \
-           | sort -rnk 3            \
-           | cut -b -45             \
-           | awk '{printf "% 8s% 8s% 8s ", $1, $2, $3;
-                   $1="";$2="";$3="";
-                   print $0; c++}
-                  c>10 {exit}')"
-        ;;
+ARG=${1:-$BLOCK_BUTTON}
+
+case $ARG in
+	1) notify-send --urgency=low       \
+	   "Process status"             \
+	   "$(ps -eo pid,pcpu,size,comm \
+	      | sort -rnk 3             \
+	      | awk '{printf "% 8s% 8s% 8s ", $1, $2, $3;
+	              $1="";$2="";$3="";
+	              print $0; c++}
+	             c>10 {exit}')"
+	;;
+	3) notify-send --urgency=low      \
+	   "Process status"            \
+	   "$(ps -eo pid,pcpu,size,cmd \
+	      | sort -rnk 3            \
+	      | cut -b -45             \
+	      | awk '{printf "% 8s% 8s% 8s ", $1, $2, $3;
+	              $1="";$2="";$3="";
+	              print $0; c++}
+	             c>10 {exit}')"
+	;;
 esac
 
-# Load
-sed -Ee 's/^([0-9]+\.[0-9]+) .*/[\1  /g' /proc/loadavg | tr -d '\n'
-
 # Thermals
-awk '{s+=$1}END{printf "%.1f°]", s / (1000*NR)}' /sys/class/thermal/thermal_zone*/temp
+# "Never cat something into awk", yeah, but it won't function properly if it
+# encounters a missing `/temp`-file.
+TEMP=$(cat /sys/class/thermal/thermal_zone*/temp 2>/dev/null | awk '{s+=$1}END{printf "%.1f", s / (1000*NR)}' )
+TEMP=`(( $(echo "$TEMP > 45" | bc -l) )) && echo -en "\x0c${TEMP}\x0b" || echo -en "$TEMP"`
+
+# Load
+LOAD=$(sed -Ee 's/^([0-9]+\.[0-9]+) .*/\1/g' /proc/loadavg | tr -d '\n')
+
+
+echo -en "[${LOAD} \x0f\x0b ${TEMP}°]"
