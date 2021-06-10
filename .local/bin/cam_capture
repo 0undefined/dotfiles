@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+
+set -e
+
+TMP=$(mktemp -d)
+
+# Res: 1280x720
+ffmpeg -y -f v4l2 -video_size 640x480 -framerate 1 -i /dev/video0 -frames:v 3 $TMP/webcam%2d.png
+
+mv $(ls -1 $TMP/*.png | tail -n 1) $HOME/webcam.png
+rm -r $TMP

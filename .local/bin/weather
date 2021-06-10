@@ -1,0 +1,179 @@
+#!/usr/bin/env python3
+
+import sys ,requests ,json ,argparse
+from datetime import datetime, timedelta
+
+# Set variables
+location_id = 2618425
+colors      = False
+show24h     = False
+
+
+# Fun defs
+def get_date(time):
+    return datetime.strptime(time, '%Y%m%d%H%M%S')
+
+
+def get_name_of_day(time):
+    return datetime.strptime(time, '%Y%m%d').strftime('%A')[:3]
+
+
+def min2time(minutes):
+    minutes = int(minutes)
+    return "{:02d}:{:02d}".format(int(minutes/100), minutes%100)
+
+
+def blue(s):
+    return u'\033[34m{}\033[0m'.format(s)
+
+
+def green(s):
+    return u'\033[32m{}\033[0m'.format(s)
+
+
+def yello(s):
+    return u'\033[33m{}\033[0m'.format(s)
+
+
+def red(s):
+    return u'\033[31m{}\033[0m'.format(s)
+
+
+def colortemp(d):
+    if isinstance(d, float):
+        d = "{:5.1f}".format(d)
+    if not colors:
+        return d
+    if int(float(d)) > 30:
+        return red(d)
+    elif int(float(d)) > 20:
+        return yello(d)
+    elif int(float(d)) > 10:
+        return green(d)
+    elif int(float(d)) < 0:
+        return blue(d)
+    return d
+
+
+def direction(d):
+    if str.startswith(d, 'NV'):
+        return u'\uf542'
+    elif str.startswith(d, 'NÃ'):
+        return u'\uf541'
+    elif str.startswith(d, 'N'):
+        return u'\uf544'
+    elif str.startswith(d, 'SÃ'):
+        return u'\uf55a'
+    elif str.startswith(d, 'SV'):
+        return u'\uf55b'
+    elif str.startswith(d, 'S'):
+        return u'\uf55c'
+    elif str.startswith(d, 'V'):
+        return u'\uf553'
+    elif str.startswith(d, 'Ã'): # "Ø", dmi hasn't got their shit together
+        return u'\uf54c'
+    else:
+        return u'?'+d
+
+
+def symbol(s: int) -> str:
+    if s == 1: # sunny
+        return u'\ue30d'
+    elif s == 2: # sunny cloudy
+        return u'\ue302'
+    elif s == 3: # cloudy
+        return u'\ue33d'
+    elif s == 60: # cloudy
+        return u'\ue332'
+    elif s == 101: # night clear
+        return u'\ue32b'
+    elif s == 102: # night cloudy
+        return u'\ue379'
+    elif s == 103: # night cloudy
+        return u'\ue37e'
+    else:
+        return u'?' + str(s)
+
+
+# Parse CLI args
+parser = argparse.ArgumentParser(description='Get weather data from DMI')
+parser.add_argument(
+    '-c',
+    default=False,
+    action='store_true',
+    help='Color output',
+)
+parser.add_argument(
+    '-d',
+    default=False,
+    action='store_true',
+    help='List for the next 24h instead of the week',
+)
+
+args    = parser.parse_args()
+colors  = args.c
+show24h = args.d
+
+# Get that sweet data
+r = requests.get(
+    'https://dmi.dk/NinJo2DmiDk/ninjo2dmidk?cmd=llj&id={}'.format(location_id)
+)
+
+r.close()
+
+if r.status_code != 200:
+    sys.exit(1)
+
+# Get the stuff we need anyhow
+data         = json.loads(r.text)
+city         = data['city']
+sun_schedule = (data['sunrise'], data['sunset'])
+
+if colors:
+    sun_schedule_str = "%s{} / %s{}\n" % (yello(u'\ue34c'), yello(u'\ue34d'))
+else:
+    sun_schedule_str = "%s{} / %s{}\n" % (u'\ue34c', u'\ue34d')
+
+print(u'{: <10} '.format(data['city']), end='')
+print(sun_schedule_str.format(
+    min2time(sun_schedule[0]),
+    min2time(sun_schedule[1]),
+))
+
+
+# 2 different types of forecast:
+def week():
+    # Load as JSON (since we use the `llj` cmd)
+    forecast     = data['aggData']
+
+    print("Day | min / max | UV")
+    for f in forecast:
+        print(u"{} | {: >2}° / {: >2}° | {:.1f}".format(
+            get_name_of_day(f['time']),
+            f['minTemp'],
+            colortemp(f['maxTemp']),
+            f['uvRadiation']))
+
+
+def day():
+    now = datetime.now()
+    forecast = data['timeserie']
+    for d in forecast:
+        if d != {}:
+            d['time'] = get_date(d['time'])
+    forecast = [f for f in forecast if f != {} and f['time'] < now + timedelta(days=1)]
+
+    print("Time  |  Temp  | Wind | Weather")
+    for f in forecast:
+        print(u"{:02d}:{:02d} | {}° | {}{:.1f} | {}".format(
+            f['time'].hour, f['time'].minute,
+            colortemp(f['temp']),
+            direction(f['windDir']),
+            f['windSpeed'],
+            symbol(f['symbol'])))
+
+
+if show24h:
+    day()
+else:
+    week()

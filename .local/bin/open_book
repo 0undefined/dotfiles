@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+
+DOCUMENT=$(find -L ~/${1:-books} -name '*.pdf' \
+  | fzf --header 'Choose a pdf')
+
+[ -n "${DOCUMENT}" ] || exit 1
+
+LOCAL_PATH=$(echo $DOCUMENT | sed -E 's/[^\/]+.pdf$//g')
+LOCAL_FILE=$(echo $DOCUMENT | sed -E 's/.*\///g')
+
+cd  $LOCAL_PATH
+${READER:-zathura} $LOCAL_FILE

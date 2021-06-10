@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+
+DOCUMENT=$(find -L ~/${1:-documents} -name '*.tex' \
+  | fzf --header 'Choose a tex file to edit' \
+        --history=${XDG_CACHE_HOME:-$HOME/.cache}/edit_document.hist)
+
+[ -n "${DOCUMENT}" ] || exit 1
+
+LOCAL_PATH=$(echo $DOCUMENT | sed -E 's/[^\/]+.tex$//g')
+LOCAL_FILE=$(echo $DOCUMENT | sed -E 's/.*\///g')
+
+cd  $LOCAL_PATH
+${EDITOR:-vim} $LOCAL_FILE

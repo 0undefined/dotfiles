@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+
+pactl set-default-sink $(pactl list sinks | \
+  grep -B 1 "$(pactl list sinks | \
+    awk '/Description/{$1="";print $0;}' | \
+    dmenu -i -fn monospace -p 'sink' -dim 0.4 -nb '#222' -nf '#bbb' -sb '#444' -sf '#eee'
+  )" | awk '/Name/{print $2}')
+kill -10 $(pidof dwmblocks)
