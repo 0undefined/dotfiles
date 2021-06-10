@@ -80,6 +80,10 @@ set fileformats=unix
 
 set grepprg=grep\ -nH\ $*
 
+"set statusline+=%#warningmsg#
+"set statusline+=%{SyntasticStatuslineFlag()}
+"set statusline+=%*
+
 let g:syntastic_always_populate_loc_list = 1
 let g:syntastic_auto_loc_list            = 1
 let g:syntastic_check_on_open            = 1
@@ -120,8 +124,9 @@ au BufNewFile,BufRead /tmp/[a-zA-Z0-9]\+/ setlocal ft=sh
 " Remove trailing cancer on write
 autocmd BufWritePre * %s/\s\+$//e
 autocmd BufWritePost *.tex !latexrun --bibtex-cmd="biber" --latex-args="-synctex=1 -interaction=nonstopmode" %
+"autocmd BufWritePost *.tex !latexrun --bibtex-cmd="biber" --latex-args="-synctex=1 -shell-escape" report.tex
 
-autocmd BufWritePost *.md !cmark-gfm -e footnotes -e table -e strikethrough -e autolink -e tagfilter -e tasklist --unsafe % > %:r.html
+"autocmd BufWritePost *.md !cmark-gfm -e footnotes -e table -e strikethrough -e autolink -e tagfilter -e tasklist --unsafe % > %:r.html
 
 autocmd BufReadPre *.asm !set ft=nasm
 
@@ -145,10 +150,22 @@ map  <ESC>[1;5C <C-Right>
 map  <ESC>[1;5D <C-Left>
 
 map <ScrollWheelUp> <C-Y>
+"map <ScrollWheelDown> <C-E>
 
 imap <C-E> <ESC>A
 imap <C-A> <ESC>I
 
+" Change cursor to block
+"autocmd VimEnter * silent !echo -ne "\e[1 q"
+"autocmd VimResume * silent !echo -ne "\e[1 q"
+
 " Preserve clipboard
 autocmd VimLeave * call system("xsel -ib", getreg())
 autocmd VimSuspend * call system("xsel -ib", getreg())
+
+"if has("autocmd")
+"  augroup templates
+"    autocmd BufNewFile *.h 0r $XDG_CONFIG_HOME/vim/templates/skeleton.h
+"    autocmd BufNewFile *.h "s/<++DEF++>/" toupper(expand('%:t:r') . "_" . expand('%:e')))
+"  augroup END
+"endif
