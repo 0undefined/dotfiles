@@ -37,6 +37,11 @@ git_status() {
 
 PROMPT='%(?..(%?%) )'
 if [ -n "$SSH_CLIENT" ]; then
-  PROMPT+="$FG[251][%{$reset_color%}$FG[081]%n%{$reset_color%}@$FG[092]%M%{$reset_color%}$FG[251]]%{$reset_color%} "
+  PROMPT+="$FG[251][%{$reset_color%}"
+  let $UID && PROMPT+="$FG[135]" || PROMPT+="$FG[160]"
+  PROMPT+="%n%{$reset_color%}"
+  PROMPT+="@"
+  PROMPT+="$FG[099]%M%{$reset_color%}"
+  PROMPT+="$FG[251]]%{$reset_color%} "
 fi
-PROMPT+='$FG[039]%c%{$reset_color%} $(git_status)%(!.#.$) '
+PROMPT+='$FG[069]%c%{$reset_color%} $(git_status)%(!.#.$) '
