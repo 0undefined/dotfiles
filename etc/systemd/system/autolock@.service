@@ -1,0 +1,13 @@
+# Enable with autolock@<username>
+[Unit]
+Description=Lock X session using slock for user %i
+Before=sleep.target
+
+[Service]
+User=%i
+Environment="DISPLAY=:0" "XAUTHORITY=/home/%i/.config/x/authority"
+ExecStartPre=/usr/bin/xset dpms force suspend
+ExecStart=/usr/local/bin/slock
+
+[Install]
+WantedBy=sleep.target
