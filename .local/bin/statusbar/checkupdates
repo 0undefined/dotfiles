@@ -12,6 +12,7 @@ case $ARG in
 		else
 			 notify-send "Available updates" "No available updates"
 		fi;;
+	3) doas /usr/bin/pacman -Sy;;
 esac
 
 [ -z "${updates}" ] && exit

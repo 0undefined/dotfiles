@@ -17,7 +17,7 @@ power=$(echo "${status}" | awk '/Battery [0-9]+: [A-Z]/{s+=$4;c++}; END{printf "
 icon='?'
 if [[ -z $(echo $status | sed -n '/on-line/p') ]]; then
 	case "${power%.*}" in
-		100 | 9[0-9]) icon='\uf578' ;;
+		100 | 9[0-9]) icon='\x0d\uf578\x0b' ;;
 		8[0-9]) icon='\uf581';;
 		7[0-9]) icon='\uf580';;
 		6[0-9]) icon='\uf57f';;
@@ -25,11 +25,11 @@ if [[ -z $(echo $status | sed -n '/on-line/p') ]]; then
 		4[0-9]) icon='\uf57d';;
 		3[0-9]) icon='\uf57c';;
 		2[0-9]) icon='\uf57b';;
-		1[0-9]) icon='\uf57a';;
-		[0-9])  icon='\uf579';;
+		1[0-9]) icon='\x0e\uf57a\x0b';;
+		[0-9])  icon='\x1c\uf579\x0b';;
 	esac
 else
 	icon='\uf583'
 fi
 
-echo -e "$icon $power"
+echo -en "$icon $power"

@@ -4,31 +4,28 @@ set -e
 ARG=${1:-$BLOCK_BUTTON}
 
 case $ARG in
-	1) notify-send --urgency=low       \
-	   "Process status"             \
-	   "$(ps -eo pid,pcpu,size,comm \
-	      | sort -rnk 3             \
-	      | awk '{printf "% 8s% 8s% 8s ", $1, $2, $3;
-	              $1="";$2="";$3="";
-	              print $0; c++}
-	             c>10 {exit}')"
-	;;
-	3) notify-send --urgency=low      \
+	1) notify-send --urgency=low   \
 	   "Process status"            \
-	   "$(ps -eo pid,pcpu,size,cmd \
-	      | sort -rnk 3            \
-	      | cut -b -45             \
-	      | awk '{printf "% 8s% 8s% 8s ", $1, $2, $3;
-	              $1="";$2="";$3="";
-	              print $0; c++}
-	             c>10 {exit}')"
+	   "$(ps k-c -eo pid,pcpu,comm | head -10 \
+	      | sed -E 's/ +/ /g;s/^ +//' \
+	      | column -tl 3 -R 1,2 -s ' ')"
+	;;
+	3) notify-send --urgency=low   \
+	   "Process status"            \
+	   "$(ps k-vsz -eo pid,pcpu,vsz,comm \
+	      | head -10  \
+	      | awk 'NR>1 {$3 = int($3/1024)"M";}{print;}' \
+	      | sed -E 's/ +/ /g;s/^ +//' \
+	      | column -tl 4 -R 1,2,3 -s ' ')"
 	;;
 esac
 
 # Thermals
 # "Never cat something into awk", yeah, but it won't function properly if it
 # encounters a missing `/temp`-file.
-TEMP=$(cat /sys/class/thermal/thermal_zone*/temp 2>/dev/null | awk '{s+=$1}END{printf "%.1f", s / (1000*NR)}' )
+TEMP="$(cat /sys/class/thermal/thermal_zone*/temp 2>/dev/null)"
+TEMP="$(echo "${TEMP}" | awk '{s+=$1}END{printf "%.1f", s / (1000*NR)}' )"
+# Color red if temp > 45
 TEMP=`(( $(echo "$TEMP > 45" | bc -l) )) && echo -en "\x0c${TEMP}\x0b" || echo -en "$TEMP"`
 
 # Load

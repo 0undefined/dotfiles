@@ -30,7 +30,7 @@ if [ -z "$(echo -e "${netstatus}" | sed -En '/up$/p' | tr -d '\n')" ]; then
 	echo -en '\x0c\uf701'
 else
 	echo -en '\x0d'
-	echo -en $(echo -n "${netstatus}" | sed -En 's/^(w[^ ]+).*up/\\uf1eb/p;s/^(e[^ ]+).*up/\\uf700/p')
+	echo -en $(echo -n "${netstatus}" | sed -En 's/^(w[^ ]+).*up/\\ufaa8/p;s/^(e[^ ]+).*up/\\uf700/p')
 fi
 
 echo -en '\x0b'
