@@ -5,7 +5,7 @@ set -e
 # Check if bluetooth is blocked
 (rfkill | grep -E "bluetooth.*\<blocked\>" >/dev/null) && echo "Please check rfkill and unblock bluetooth module." && exit || true
 
-[ "$1" = "stop" ] && systemctl stop bluetooth.service && exit
+[ "$1" = "stop" ] && systemctl stop bluetooth.service && sigdwmblocks 4 && exit
 systemctl is-active bluetooth.service >/dev/null || systemctl start bluetooth.service
 
 [ "$(bluetoothctl show | awk '/Powered/ {print $2}')" = "no" ] && bluetoothctl power on && bluetoothctl agent on
@@ -27,3 +27,5 @@ else
 
   bluetoothctl paired-devices | awk "/Device/ {if(\"$CONNECTED\"==\$3) print \"\033[1;32m\" \$2 \"\t\" \$3 \"\033[0m\"; else print \$2 \"\t\" \$3;}"
 fi
+
+sigdwmblocks 4

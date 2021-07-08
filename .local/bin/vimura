@@ -1,5 +1,4 @@
 #!/usr/bin/env bash
 
 echo ${1%.pdf}
-
 zathura --fork -x "vim --servername ${1%.pdf} -c \"let g:syncpdf='${1%.pdf}'\" --remote +%{line} %{input}" $*
