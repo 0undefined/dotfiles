@@ -215,8 +215,17 @@ alias ptop="ps -o pid,user,size,pcpu,command --sort size cx"
 ## Do before dropping into shell
 BANNERFILE=~/.config/texts/todo.md
 
-#if [[ $(tput cols) -gt 140 ]]; then
-#  pr -mtW 140 $BANNERFILE ~/.config/texts/todo.md
-#else
-[ -f "$BANNERFILE" ] && cat $BANNERFILE || true
-#fi
+printwithcolors() {
+  local title='s/^(#+.*)/\\e[1;38;5;71m\1\\e[0m/g'
+  local onion='s/(﨩)/\\e[38;5;147m\1\\e[0m/g'
+  local progress='s/\[([0-9]+)\/([0-9]+)\]/\\e[38;5;229m[\1\/\2]\\e[0m/g'
+  local comment='s/ *\((.*)\)/  \\e[3;38;5;237m\1\\e[0m/g'
+  local git='s/([Gg]it[a-zA-Z]*)/\\e[38;5;222m\1\\e[0m/g'
+  echo -e "$(sed -Ee "$onion;$title;$progress;$comment;$git" $1)"
+}
+
+if [[ $(tput cols) -gt 140 ]]; then
+  [ "$TERM" =~ .*256.* ] && printwithcolors $BANNERFILE || pr -mtW 140 $BANNERFILE ~/.config/texts/setsail
+fi
+
+[ -n "$SSH_CLIENT" ] && ! [[ "$TERM" =~ ^screen.*$ ]] && screen -T screen-256color -s zsh -R && exit 0
