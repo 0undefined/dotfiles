@@ -8,12 +8,15 @@ export EDITOR="vim"
 export PAGER="less"
 export READER="zathura"
 export TERMINAL="st"
+export TERM="$TERMINAL"
 export VISUAL="vim"
+export SHELL="zsh"
 
 # XDG~
 export XDG_CACHE_HOME="$HOME/.cache"
 export XDG_CONFIG_HOME="$HOME/.config"
 export XDG_DATA_HOME="$HOME/.local/share"
+export XDG_DESKTOP_DIR="$HOME"
 
 # X11-stuff
 export XAUTHORITY="$XDG_RUNTIME_DIR/Xauthority"
@@ -28,6 +31,7 @@ export LESS=-F -R
 export LESSHISTFILE="${XDG_DATA_HOME:-$HOME/.local/share}/lesshist"
 export MANWIDTH=${MANWIDTH:-80}
 export PASSWORD_STORE_DIR="${XDG_CONFIG_HOME:-$HOME/.config}/passwordstore"
+export SCREENRC="${XDG_CONFIG_HOME:-$HOME/.config}/screenrc"
 # Vim stuffs
 export MYVIMRC="${XDG_CONFIG_HOME:-$HOME/.config}/vim/vimrc"
 export VIMINIT="source $MYVIMRC"
@@ -39,6 +43,10 @@ export ZSH_COMPDUMP=$XDG_CACHE_HOME/zcompdump-$ZSH_VERSION
 #
 # Developer thingies
 #
+export ANDROID_SDK_HOME="${XDG_CONFIG_HOME:-$HOME/.config}/android"
+export AWS_CONFIG_FILE="${XDG_CONFIG_HOME:-$HOME/.config}/aws/config"
+export AWS_SHARED_CREDENTIALS_FILE="${XDG_CONFIG_HOME:-$HOME/.config}/aws/credentials"
+export KUBECONFIG="${XDG_CACHE_HOME:-$HOME/.cache}/kube/config"
 
 # Self explanatory
 export GOPATH="${XDG_DATA_HOME:-$HOME/.local/share}/go"
@@ -48,7 +56,7 @@ export IPYTHONDIR="${XDG_CACHE_HOME:-$HOME/.cache}/ipython"
 export GEM_PATH="${XDG_CACHE_HOME:-$HOME/.cache}/gem"
 
 # Rust
-export CARGO_HOME="${XDG_CACHE_HOME:-$HOME/.cache}/cargo"
+export CARGO_HOME="${XDG_DATA_HOME:-$HOME/.local/share}/cargo"
 export RUSTUP_HOME="${XDG_CACHE_HOME:-$HOME/.cache}/rustup"
 
 [ "$(tty)" = "/dev/tty1" ] && ! pidof Xorg >/dev/null 2>&1 && exec startx

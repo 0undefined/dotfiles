@@ -1,0 +1,7 @@
+caption always "%{=b dw}═%{-b dw}╡%{=b dk}[ %{-b dw}%{-b db}$USER%{-b dw}@%{-b db}%H %{=b dk}] [ %= %?%{-b dk}%-Lw%?%{+b dk}%{+b dy}%n:%t%{+b dk}%?(%u)%?%{-b dw}%?%{-b dk}%+Lw%? %{=b dk}]%{-b dw}╞%{+b dw}═"
+vbell     off
+utf8      on
+altscreen on
+encoding  UTF-8
+
+term screen-256color
