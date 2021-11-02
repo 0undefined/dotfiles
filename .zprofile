@@ -27,7 +27,7 @@ export XRESOURCES="$HOME/.config/x/resources"
 # More utils / Preferences
 export GNUPGHOME="${XDG_CONFIG_HOME:-$HOME/.config}/gnupg"
 export INPUTRC="${XDG_CONFIG_HOME:-$HOME/.config}/inputrc"
-export LESS='-F -R'
+export LESS='-F -R --use-color -Dd+r$Du+b'
 export LESSHISTFILE="${XDG_DATA_HOME:-$HOME/.local/share}/lesshist"
 export MANWIDTH=${MANWIDTH:-80}
 export PASSWORD_STORE_DIR="${XDG_CONFIG_HOME:-$HOME/.config}/passwordstore"

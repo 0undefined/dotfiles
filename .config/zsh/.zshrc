@@ -1,10 +1,11 @@
-# ~/.zshrc
+# zshrc
 
 export GPG_TTY=$(tty)
 
 # If not running interactively, don't do anything
 [[ $- != *i* ]] && return
 
+# Add [username@hostname] prefix to prompt when its ssh
 if [ "$TERM" = "linux" ]; then
   PROMPT='%(?..(%?%) )'
   [ -n "$SSH_CLIENT" ] && PROMPT+="[%n@%M] "
@@ -24,15 +25,19 @@ CASE_SENSITIVE="true"
 # Uncomment the following line to disable bi-weekly auto-update checks.
 DISABLE_AUTO_UPDATE="true"
 
+# Uncomment the following line to automatically update without prompting.
+DISABLE_UPDATE_PROMPT="false"
+
+# Uncomment the following line to change how often to auto-update (in days).
+export UPDATE_ZSH_DAYS=31
+
 # Uncomment the following line if pasting URLs and other text is messed up.
 DISABLE_MAGIC_FUNCTIONS=true
 
 # Uncomment the following line to disable auto-setting terminal title.
 DISABLE_AUTO_TITLE="true"
 
-HIST_STAMPS="yyyy-mm-dd"
-
-plugins=()
+#plugins=(git)
 
 source $ZSH/oh-my-zsh.sh
 
@@ -60,14 +65,16 @@ setopt hist_reduce_blanks
 setopt no_share_history
 setopt no_histverify
 
-#zstyle :compinstall filename '$HOME/.zshrc'
 
 autoload -Uz compinit
 compinit -d ~/.cache/zcompdump-$ZSH_VERSION
-
 autoload -Uz promptinit
 promptinit
 
+zstyle ':completion:*' menu select
+zmodload zsh/complist
+
+bindkey -v
 export KEYTIMEOUT=1
 set -o vi
 
@@ -93,28 +100,29 @@ autoload -Uz edit-command-line
 zle -N edit-command-line
 bindkey -M vicmd ' ' edit-command-line
 
-bindkey "^e" end-of-line
-bindkey "^a" beginning-of-line
-bindkey "^t" transpose-chars
-bindkey "^r" history-incremental-search-backward
+bindkey -v '^?' backward-delete-char
 
 bindkey -M vicmd "^e" end-of-line
 bindkey -M vicmd "^a" beginning-of-line
+bindkey "" end-of-line
+bindkey "" beginning-of-line
+bindkey "" history-incremental-search-backward
 
 bindkey "${terminfo[khome]}" beginning-of-line
 bindkey "${terminfo[kend]}"  end-of-line
 bindkey "^[[3~"              delete-char
 bindkey "^[3;5~"             delete-char
+bindkey "^[[P"               delete-char
 bindkey "^[[1;5C"            forward-word
 bindkey "^[[1;5D"            backward-word
 
-autoload -U    up-line-or-beginning-search
-autoload -U    down-line-or-beginning-search
-zle -N         up-line-or-beginning-search
-zle -N         down-line-or-beginning-search
+autoload -U up-line-or-beginning-search
+autoload -U down-line-or-beginning-search
+zle -N      up-line-or-beginning-search
+zle -N      down-line-or-beginning-search
 bindkey "^[A" up-line-or-beginning-search
-bindkey "^[OA" up-line-or-beginning-search
 bindkey "^[B" down-line-or-beginning-search
+bindkey "^[OA" up-line-or-beginning-search
 bindkey "^[OB" down-line-or-beginning-search
 
 ## Handy functions
@@ -143,56 +151,72 @@ stopwatch() {
     done
 }
 
-checkout() {
-  local current_path
-  current_path=`pwd`
-  echo $current_path
-  cd $(mktemp -d)
-  git clone "$1"
-  cd *
-  export OLDPWD=$current_path
+fs () {
+  if [[ $1 == "" ]]; then
+      printf ']710;%s' "xft:DejaVuSansMono Nerd Font Mono:pixelsize=14"
+  else
+      printf ']710;%s' "xft:DejaVuSansMono Nerd Font Mono:pixelsize=${1}"
+  fi
+}
+
+calcgrade () {
+    if [ -z $1 ]; then
+        echo "Please submit an argument"
+    fi
+    D=$(find .  -maxdepth 3 -name $1\* -type d)
+    if [ -z $D ]; then
+        echo $1 "not found"
+    else
+        ls $D/guidelines.mrk
+        echo $( \
+            grep -oE "([0-9]+(\.[0-9]+)?)/[0-9]+" $D/guidelines.mrk \
+                | sed -Ee 's/^([0-9]+(\.[0-9]+)?)\/.*/\1/g'         \
+                | tr '\n' '+'                                       \
+                | sed -Ee 's/^(.*)\+$/\1/g' -e 's/\+/ + /g')        \
+            | bc
+    fi
+}
+
+function screengrab() {
+  local OUT=screengrab.gif
+  local SIZE=$1
+  local POS=$2
+  ffmpeg -f x11grab -r 20 -s ${SIZE} -i :0.0+${POS} -r 20 out.gif
+}
+
+fr () {
+  which futhark > /dev/null
+  if [ ! -z $? ]; then
+    activate futhark
+  fi
+  futhark repl
 }
 
 ## Aliases
 alias :q='exit'
-alias cgpu='sshpass -e ssh -l qgt268 ku-gpu'
-alias fsharpc='fsharpc --nologo --standalone'
-alias fsharpi='fsharpi --nologo'
-alias gdb='gdb -q -x ${XDG_CONFIG_HOME:-$HOME/.config}/gdbinit'
+alias diff='diff --color=auto'
+alias dmesg='dmesg --color=auto'
+alias gdb='gdb -q'
 alias glog2="git log --graph --abbrev-commit --decorate --format=format:'%Cgreen%h%C(reset) [%G?] %C(white)%s%C(reset) %C(dim white)- %an%C(reset)%Cred%d%C(reset)' --all"
 alias glog='git log --pretty="%Cgreen%H%Creset [%G?] %cn: %s %Cred%d%Creset"'
-alias irssi="irssi --home=${XDG_DATA_HOME:-$HOME/.config/irssi}"
-alias less='less -R'
+alias ip='ip -c'
 alias ls='ls --color=auto'
+alias l='ls -lAh'
 alias mutt='neomutt'
+alias mv='mv -i'
 alias pbcopy='xclip -selection clipboard -i'
 alias pbpaste='xclip -selection clipboard -o'
-alias push='git push && mpg123 ~/Downloads/Mario-coin-sound.mp3'
+alias push='git push && mpgv ~/downloads/mario_power_up.mp3'
 alias s='vim $(fzf)'
-alias scan='nmcli d wifi rescan'
-alias sudo='doas'
+alias scan='sudo iwlist wlp3s0 scan > /dev/null'
 alias v='echo -ne "\e[1 q" && vim --servername vim'
-alias wifi-scan='nmcli d wifi rescan'
-alias vbox='virtualbox'
-
-# Make sure that nobody makes some silly mistake
-alias nano='vim'
-alias emacs='vim'
+alias ptop="ps -o pid,user,size,pcpu,command --sort size cx"
 
 ## Do before dropping into shell
-source ~/.secrets/sshpass
-
 BANNERFILE=~/.config/texts/todo.md
 
-printwithcolors() {
-  local title='s/^(#+.*)/\\e[1;38;5;71m\1\\e[0m/g'
-  local onion='s/(﨩)/\\e[38;5;147m\1\\e[0m/g'
-  local progress='s/\[([0-9]+)\/([0-9]+)\]/\\e[38;5;229m[\1\/\2]\\e[0m/g'
-  local comment='s/ *\((.*)\)/  \\e[3;38;5;237m\1\\e[0m/g'
-  local git='s/([Gg]it[a-zA-Z]*)/\\e[38;5;222m\1\\e[0m/g'
-  echo -e "$(sed -Ee "$onion;$title;$progress;$comment;$git" $1)"
-}
-
-if [[ $(tput cols) -gt 140 ]]; then
-  [ "$TERM" =~ .*256.* ] && printwithcolors $BANNERFILE || pr -mtW 140 $BANNERFILE ~/.config/texts/setsail
-fi
+#if [[ $(tput cols) -gt 140 ]]; then
+#  pr -mtW 140 $BANNERFILE ~/.config/texts/todo.md
+#else
+[ -f "$BANNERFILE" ] && cat $BANNERFILE || true
+#fi
