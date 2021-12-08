@@ -27,11 +27,12 @@ export XRESOURCES="$HOME/.config/x/resources"
 # More utils / Preferences
 export GNUPGHOME="${XDG_CONFIG_HOME:-$HOME/.config}/gnupg"
 export INPUTRC="${XDG_CONFIG_HOME:-$HOME/.config}/inputrc"
-export LESS='-F -R --use-color -Dd+r$Du+b'
+export LESS="-F -R"
 export LESSHISTFILE="${XDG_DATA_HOME:-$HOME/.local/share}/lesshist"
 export MANWIDTH=${MANWIDTH:-80}
 export PASSWORD_STORE_DIR="${XDG_CONFIG_HOME:-$HOME/.config}/passwordstore"
 export SCREENRC="${XDG_CONFIG_HOME:-$HOME/.config}/screenrc"
+
 # Vim stuffs
 export MYVIMRC="${XDG_CONFIG_HOME:-$HOME/.config}/vim/vimrc"
 export VIMINIT="source $MYVIMRC"
@@ -56,7 +57,8 @@ export IPYTHONDIR="${XDG_CACHE_HOME:-$HOME/.cache}/ipython"
 export GEM_PATH="${XDG_CACHE_HOME:-$HOME/.cache}/gem"
 
 # Rust
+export CARGO_HOME="${XDG_CACHE_HOME:-$HOME/.cache}/cargo"
 export CARGO_HOME="${XDG_DATA_HOME:-$HOME/.local/share}/cargo"
 export RUSTUP_HOME="${XDG_CACHE_HOME:-$HOME/.cache}/rustup"
 
-[ "$(tty)" = "/dev/tty1" ] && ! pidof Xorg >/dev/null 2>&1 && exec startx
+[ "$(tty)" = "/dev/tty1" ] && ! pidof Xorg >/dev/null 2>&1 && exec startx "$XINITRC"

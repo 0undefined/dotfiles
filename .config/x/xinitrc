@@ -19,4 +19,5 @@ autorandr -c
 
 feh --no-fehbg --bg-scale ~/pictures/background.png
 dwmblocks &
+xrdb $XDEFAULTS
 exec /usr/local/bin/dwm
