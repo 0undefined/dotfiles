@@ -3,7 +3,7 @@ systemctl --user import-environment DISPLAY
 # Notification daemon
 dunst &
 # Composite manager, for blur and other neat effects
-picom --blur-method dual_kawase --blur-strength 5 --experimental-backends --backend glx &
+picom --blur-method dual_kawase --blur-strength 2 --experimental-backends --backend glx &
 
 # Disable mouse acceleration
 xset m 0 0 &
