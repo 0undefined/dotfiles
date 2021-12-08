@@ -25,19 +25,15 @@ CASE_SENSITIVE="true"
 # Uncomment the following line to disable bi-weekly auto-update checks.
 DISABLE_AUTO_UPDATE="true"
 
-# Uncomment the following line to automatically update without prompting.
-DISABLE_UPDATE_PROMPT="false"
-
-# Uncomment the following line to change how often to auto-update (in days).
-export UPDATE_ZSH_DAYS=31
-
 # Uncomment the following line if pasting URLs and other text is messed up.
 DISABLE_MAGIC_FUNCTIONS=true
 
 # Uncomment the following line to disable auto-setting terminal title.
 DISABLE_AUTO_TITLE="true"
 
-#plugins=(git)
+HIST_STAMPS="yyyy-mm-dd"
+
+plugins=()
 
 source $ZSH/oh-my-zsh.sh
 
@@ -54,9 +50,11 @@ man() {
     command man "$@"
 }
 
+# Behaviour
 setopt nonomatch
 setopt interactivecomments
 
+# History
 HISTFILE="${XDG_DATA_HOME:-$HOME/.local/share}/histfile"
 HISTSIZE=32768
 SAVEHIST=32768
@@ -65,18 +63,14 @@ setopt hist_reduce_blanks
 setopt no_share_history
 setopt no_histverify
 
-
+# Cache location
 autoload -Uz compinit
 compinit -d ~/.cache/zcompdump-$ZSH_VERSION
-autoload -Uz promptinit
-promptinit
 
-zstyle ':completion:*' menu select
-zmodload zsh/complist
-
-bindkey -v
+# Bindings
 export KEYTIMEOUT=1
 set -o vi
+bindkey -v
 
 function zle-keymap-select {
   if [[ ${KEYMAP} == vicmd ]] || [[ $1 = 'block' ]]; then
@@ -100,19 +94,14 @@ autoload -Uz edit-command-line
 zle -N edit-command-line
 bindkey -M vicmd ' ' edit-command-line
 
-bindkey -v '^?' backward-delete-char
-
-bindkey -M vicmd "^e" end-of-line
-bindkey -M vicmd "^a" beginning-of-line
-bindkey "" end-of-line
-bindkey "" beginning-of-line
-bindkey "" history-incremental-search-backward
+bindkey -a "^e" vi-end-of-line
+bindkey "^a" beginning-of-line
+bindkey "^r" history-incremental-search-backward
 
 bindkey "${terminfo[khome]}" beginning-of-line
 bindkey "${terminfo[kend]}"  end-of-line
 bindkey "^[[3~"              delete-char
 bindkey "^[3;5~"             delete-char
-bindkey "^[[P"               delete-char
 bindkey "^[[1;5C"            forward-word
 bindkey "^[[1;5D"            backward-word
 
@@ -120,9 +109,9 @@ autoload -U up-line-or-beginning-search
 autoload -U down-line-or-beginning-search
 zle -N      up-line-or-beginning-search
 zle -N      down-line-or-beginning-search
-bindkey "^[A" up-line-or-beginning-search
-bindkey "^[B" down-line-or-beginning-search
+bindkey "^[A"  up-line-or-beginning-search
 bindkey "^[OA" up-line-or-beginning-search
+bindkey "^[B"  down-line-or-beginning-search
 bindkey "^[OB" down-line-or-beginning-search
 
 ## Handy functions
@@ -151,32 +140,6 @@ stopwatch() {
     done
 }
 
-fs () {
-  if [[ $1 == "" ]]; then
-      printf ']710;%s' "xft:DejaVuSansMono Nerd Font Mono:pixelsize=14"
-  else
-      printf ']710;%s' "xft:DejaVuSansMono Nerd Font Mono:pixelsize=${1}"
-  fi
-}
-
-calcgrade () {
-    if [ -z $1 ]; then
-        echo "Please submit an argument"
-    fi
-    D=$(find .  -maxdepth 3 -name $1\* -type d)
-    if [ -z $D ]; then
-        echo $1 "not found"
-    else
-        ls $D/guidelines.mrk
-        echo $( \
-            grep -oE "([0-9]+(\.[0-9]+)?)/[0-9]+" $D/guidelines.mrk \
-                | sed -Ee 's/^([0-9]+(\.[0-9]+)?)\/.*/\1/g'         \
-                | tr '\n' '+'                                       \
-                | sed -Ee 's/^(.*)\+$/\1/g' -e 's/\+/ + /g')        \
-            | bc
-    fi
-}
-
 function screengrab() {
   local OUT=screengrab.gif
   local SIZE=$1
@@ -196,9 +159,12 @@ fr () {
 alias :q='exit'
 alias diff='diff --color=auto'
 alias dmesg='dmesg --color=auto'
-alias gdb='gdb -q'
+alias fsharpc='fsharpc --nologo --standalone'
+alias fsharpi='fsharpi --nologo'
+alias gdb='gdb -q -x ${XDG_CONFIG_HOME:-$HOME/.config}/gdbinit'
 alias glog2="git log --graph --abbrev-commit --decorate --format=format:'%Cgreen%h%C(reset) [%G?] %C(white)%s%C(reset) %C(dim white)- %an%C(reset)%Cred%d%C(reset)' --all"
 alias glog='git log --pretty="%Cgreen%H%Creset [%G?] %cn: %s %Cred%d%Creset"'
+alias irssi="irssi --home=${XDG_DATA_HOME:-$HOME/.config/irssi}"
 alias ip='ip -c'
 alias ls='ls --color=auto'
 alias l='ls -lAh'
@@ -208,9 +174,15 @@ alias pbcopy='xclip -selection clipboard -i'
 alias pbpaste='xclip -selection clipboard -o'
 alias push='git push && mpgv ~/downloads/mario_power_up.mp3'
 alias s='vim $(fzf)'
-alias scan='sudo iwlist wlp3s0 scan > /dev/null'
+alias scan='nmcli d wifi rescan'
+alias sudo='doas'
 alias v='echo -ne "\e[1 q" && vim --servername vim'
 alias ptop="ps -o pid,user,size,pcpu,command --sort size cx"
+alias vbox='virtualbox'
+
+# Make sure that nobody makes some silly mistake
+alias nano='vim'
+alias emacs='vim'
 
 ## Do before dropping into shell
 BANNERFILE=~/.config/texts/todo.md
@@ -229,3 +201,5 @@ if [[ $(tput cols) -gt 140 ]]; then
 fi
 
 [ -n "$SSH_CLIENT" ] && ! [[ "$TERM" =~ ^screen.*$ ]] && screen -T screen-256color -s zsh -R && exit 0
+
+true
