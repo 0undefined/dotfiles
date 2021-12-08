@@ -39,6 +39,8 @@ let g:netrw_banner=0
 let g:netrw_browse_split=1
 let g:netrw_altv=4
 
+set bg=dark
+
 " theme
 syntax enable
 
@@ -46,7 +48,12 @@ syntax enable
 set background=dark
 set colorcolumn=81
 
-" Colorscheme overrides, for transparency
+" Colorscheme overrides, for transparency and other stuff
+let g:moonflyTransparent = 1
+let g:moonflyCursorColor = 1
+let g:moonflyTerminalColors = 1
+let g:moonflyUndercurls = 1
+
 let g:jellybeans_overrides = { 'background': {
 \ 'guibg':      'none',
 \ 'ctermbg':    'none',
@@ -54,11 +61,20 @@ let g:jellybeans_overrides = { 'background': {
 \}}
 let g:jellybeans_use_term_italics = 1
 
-colorscheme jellybeans
-"set listchars=space:·\,eol:¬
+" Enable termguicolors
+if exists('+termguicolors')
+  let &t_8f = "\<Esc>[38;2;%lu;%lu;%lum"
+  let &t_8b = "\<Esc>[48;2;%lu;%lu;%lum"
+  set termguicolors
+endif
+
+"colorscheme jellybeans
+colorscheme moonfly
+
 set listchars=tab:\ \ >,extends:…,precedes:…
 set list
-set tags+=./tags;/
+set tags+=./tags
+set tags+=../tags
 
 
 " adding pathogen
@@ -72,18 +88,15 @@ set fileformats=unix
 
 set grepprg=grep\ -nH\ $*
 
-"set statusline+=%#warningmsg#
-"set statusline+=%{SyntasticStatuslineFlag()}
-"set statusline+=%*
-
 let g:syntastic_always_populate_loc_list = 1
 let g:syntastic_auto_loc_list            = 1
 let g:syntastic_check_on_open            = 1
 let g:syntastic_check_on_wq              = 0
 
 " filetypes
-let g:syntastic_disabled_filetypes=['asm', 's', 'latex', 'tex']
+let g:syntastic_disabled_filetypes=['asm', 's', 'latex', 'tex', 'javac', 'java']
 
+""" LATEX STUFFS
 let g:tex_flavor='latex'
 let g:vimtex_view_method='zathura'
 let g:vimtex_quickfix_mode=0
@@ -109,6 +122,10 @@ function! Synctex()
   execute "silent !zathura --synctex-forward " . line('.') . ":" . col('.') . ":" . bufname('%') . " " . expand('%:t:r') . ".pdf"
   redraw!
 endfunction
+
+autocmd BufReadPost *.tex set spell spelllang=en_US
+
+""" /LATEX STUFFS
 
 au BufNewFile,BufRead /tmp/[a-zA-Z0-9]\+/ setlocal ft=sh
 
@@ -143,6 +160,35 @@ map <ScrollWheelUp> <C-Y>
 imap <C-E> <ESC>A
 imap <C-A> <ESC>I
 
+"autocmd VimEnter * silent !echo -ne "\e[1 q"
+"autocmd VimResume * silent !echo -ne "\e[1 q"
+
 " Preserve clipboard
 autocmd VimLeave * call system("xsel -ib", getreg())
 autocmd VimSuspend * call system("xsel -ib", getreg())
+
+"if has("autocmd")
+"  augroup templates
+"    autocmd BufNewFile *.h 0r $XDG_CONFIG_HOME/vim/templates/skeleton.h
+"    autocmd BufNewFile *.h "s/<++DEF++>/" toupper(expand('%:t:r') . "_" . expand('%:e')))
+"  augroup END
+"endif
+
+
+" Change cursor to block
+"   1 -> solid underscore
+"   2 -> block
+"   4 -> underline
+"   5 -> blinking vertical bar
+"   6 -> solid vertical bar
+"   7 -> snowman
+au VimEnter * silent execute "!echo -ne '\e[2 q'"
+"au VimLeave * silent execute "!echo -e '\e[6 q'
+au InsertEnter * silent execute "!echo -ne '\e[6 q'"
+au InsertLeave * silent execute "!echo -ne '\e[2 q'"
+
+" Undercurls
+let &t_Cs = "\e[4:3m"
+let &t_Ce = "\e[4:0m"
+hi SpellBad   guisp=red    gui=undercurl guifg=NONE guibg=NONE ctermfg=NONE ctermbg=NONE term=underline cterm=undercurl ctermul=red
+hi SpellCap   guisp=yellow    gui=undercurl guifg=NONE guibg=NONE ctermfg=NONE ctermbg=NONE term=underline cterm=undercurl ctermul=yellow
