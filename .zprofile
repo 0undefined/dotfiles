@@ -21,7 +21,7 @@ export XDG_DESKTOP_DIR="$HOME"
 # X11-stuff
 export XAUTHORITY="$XDG_RUNTIME_DIR/Xauthority"
 export XDEFAULTS="$HOME/.config/x/defaults"
-export XINITRC="${XDG_CONFIG_HOME:-$HOME/.config}/xinitrc"
+export XINITRC="${XDG_CONFIG_HOME:-$HOME/.config}/x/xinitrc"
 export XRESOURCES="$HOME/.config/x/resources"
 
 # More utils / Preferences
