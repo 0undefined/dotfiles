@@ -1,4 +1,21 @@
 set recolor true
-set recolor-darkcolor   \#EEE7DD
-set recolor-lightcolor  \#121110
+set recolor-darkcolor   \#b2b2b2
+set recolor-lightcolor  \#080808
+set recolor-keephue     true
+
+set statusbar-bg        \#323437
+set statusbar-fg        \#949494
+
+set completion-bg       \#323437
+set completion-fg       \#c6c6c6
+set completion-group-bg \#323437
+set completion-group-fg \#e4e4e4
+set completion-highlight-bg \#323437
+set completion-highlight-fg \#74b2ff
+
+set inputbar-bg         \#080808
+set inputbar-fg         \#e4e4e4
+
+set default-bg          \#000000
+
 set selection-clipboard clipboard
