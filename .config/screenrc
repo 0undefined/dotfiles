@@ -1,7 +1,13 @@
-caption always "%{=b dw}═%{-b dw}╡%{=b dk}[ %{-b dw}%{-b db}$USER%{-b dw}@%{-b db}%H %{=b dk}] [ %= %?%{-b dk}%-Lw%?%{+b dk}%{+b dy}%n:%t%{+b dk}%?(%u)%?%{-b dw}%?%{-b dk}%+Lw%? %{=b dk}]%{-b dw}╞%{+b dw}═"
+#caption always "%{=b dw}═%{-b dw}╡%{=b dk}[ %{-b dw}%{-b db}$USER%{-b dw}@%{-b db}%H %{=b dk}] [ %= %?%{-b dk}%-Lw%?%{+b dk}%{+b dy}%n:%t%{+b dk}%?(%u)%?%{-b dw}%?%{-b dk}%+Lw%? %{=b dk}]%{-b dw}╞%{+b dw}═"
 vbell     off
 utf8      on
 altscreen on
 encoding  UTF-8
+startup_message off
+truecolor on
+hardstatus off
+backtick 0 5 5 "/bin/date" '+%F %R'
+backtick 2 1800 1800 "/bin/whoami"
+hardstatus alwayslastline '%{-d dk}-[ %2`@%H %{-d dk}][%{-}%= %{7}%?%-Lw%?%{1;0}%{1}(%{15}%n%f%t%?(%u)%?%{1;0}%{1})%{7}%?%+Lw%?%? %=%{+d dk}][ %{-d dk}%{6}%0` %{-d dk}]-'
 
-term screen-256color
+term st-256color
