@@ -18,9 +18,12 @@ dirs, and put all config files in `~/.config`.
 
 1. clone my (or anyone elses, or the original and configure it your own) dwm
    and dwmblocks configs and `sudo make clean install`.
+   If you do not want to use dwm, you can change the `exec dwm` line in
+   [xinitrc](.config/x/xinitrc)
 2. Copy `etc/systemd/system/autolock@.service` to `/etc/systemd/system/`-folder and
-   enable it with `systemctl enable autolock@<your username>.service`.
-3. Copy everything else to your home folder.
+   enable it with `systemctl enable autolock@<your username>.service`, in order
+   to enable autolocking when putting your computer to sleep or hibernation.
+3. `$ cp .local .config ~`
 
 ```bash
 cp etc/systemd/system/autolock@.service /etc/systemd/system/
