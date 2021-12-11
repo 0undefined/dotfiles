@@ -1,29 +1,24 @@
 [global]
 alignment       = left
-bounce_freq     = 0
 browser         = /usr/bin/firefox-developer-edition -new-tab
 dmenu           = /usr/bin/dmenu -p dunst:
 follow          = none
-font            = DejaVuSansMono Nerd Font Mono 11
-#font = Iosevka Term 11
+font            = DejaVuSansMono Nerd Font Mono 9
 format          = "<b>%s</b>\n%b"
 frame_color     = "#8EC07C"
 frame_width     = 3
-geometry        = "960x540-11+30"
-hide_duplicates_count = yes
 history_length  = 15
 horizontal_padding = 6
-icon_path       = /usr/share/icons/Arc/mimetypes/16:/usr/share/icons/Arc/status/48:/usr/share/icons/Arc/devices/16:/usr/share/icons/Arc/emblems/48
+icon_path       = /usr/share/icons/Papirus/32x32/actions:/usr/share/icons/Papirus/32x32/apps:/usr/share/icons/Papirus/32x32/devices:/usr/share/icons/Papirus/32x32/emblems:/usr/share/icons/Papirus/32x32/emotes:/usr/share/icons/Papirus/32x32/mimetypes:/usr/share/icons/Papirus/32x32/places:/usr/share/icons/Papirus/32x32/status
 icon_position   = off
 idle_threshold  = 0
 ignore_newline  = no
 indicate_hidden = yes
 line_height     = 3
 markup          = yes
-max_icon_size   = 80
+max_icon_size   = 32
 monitor         = 0
 padding         = 6
-plain_text      = no
 progress_bar    = true
 separator_color = frame
 separator_height = 2
@@ -31,19 +26,10 @@ show_age_threshold = -1
 show_indicators = no
 shrink          = yes
 sort            = no
-corner_radius   = 5
+corner_radius   = 0
 stack_duplicates = yes
-startup_notification = false
 sticky_history  = yes
-transparency    = 5
-kord_wrap       = yes
-
-[shortcuts]
-close       = ctrl+space
-close_all   = ctrl+shift+space
-# available modifiers are 'ctrl', 'mod1' (the alt-key), 'mod2', 'mod3' and 'mod4' (super-key)
-history     = ctrl+mod1+space
-context     = ctrl+shift+period
+transparency    = 0
 
 [urgency_low]
 frame_color = "#89C8FF"
@@ -58,7 +44,7 @@ background  = "#191311"
 timeout     = 8
 
 [urgency_critical]
-frame_color = "#E86341"
-foreground = "#E86341"
-background = "#191311"
-timeout = 12
+frame_color = "#FF5454"
+foreground  = "#FF5454"
+background  = "#323437"
+timeout     = 12
