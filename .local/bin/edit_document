@@ -1,13 +1,23 @@
 #!/usr/bin/env bash
 
-DOCUMENT=$(find -L ~/${1:-documents} -name '*.tex' \
-  | fzf --header 'Choose a tex file to edit' \
-        --history=${XDG_CACHE_HOME:-$HOME/.cache}/edit_document.hist)
+DIR=${1:-~/documents}
+EXTENSION=${2:-tex}
+
+DOCUMENT=$(find -L $DIR -name "*.${EXTENSION}" \
+  | fzf -m --header 'Open file(s) in $EDITOR' \
+        --history=${XDG_CACHE_HOME:-$HOME/.cache}/edit_document.hist \
+        --border=rounded --preview='bat {}')
 
 [ -n "${DOCUMENT}" ] || exit 1
 
-LOCAL_PATH=$(echo $DOCUMENT | sed -E 's/[^\/]+.tex$//g')
-LOCAL_FILE=$(echo $DOCUMENT | sed -E 's/.*\///g')
+if [ $(( $(echo "$DOCUMENT" | wc -l) )) -eq 1 ]; then
+  LOCAL_PATH=$(echo $DOCUMENT | sed -E 's/[^\/]+.tex$//g')
+  LOCAL_FILE=$(echo $DOCUMENT | sed -E 's/.*\///g')
 
-cd  $LOCAL_PATH
-${EDITOR:-vim} $LOCAL_FILE
+  # Go to the path of the file
+  cd $LOCAL_PATH
+  ${EDITOR:-vim} $LOCAL_FILE
+else
+  ${EDITOR:-vim} -p $DOCUMENT
+fi
+
