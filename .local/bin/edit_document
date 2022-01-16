@@ -3,9 +3,14 @@
 DIR=${1:-~/documents}
 EXTENSION=${2:-tex}
 
+PREVIEWPOS=right
+
+[ $(( $(tput cols) )) -lt 120 ] && PREVIEWPOS=up
+
 DOCUMENT=$(find -L $DIR -name "*.${EXTENSION}" \
   | fzf -m --header 'Open file(s) in $EDITOR' \
         --history=${XDG_CACHE_HOME:-$HOME/.cache}/edit_document.hist \
+        --preview-window=$PREVIEWPOS \
         --border=rounded --preview='bat {}')
 
 [ -n "${DOCUMENT}" ] || exit 1
