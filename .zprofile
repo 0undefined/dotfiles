@@ -32,6 +32,13 @@ export LESSHISTFILE="${XDG_DATA_HOME:-$HOME/.local/share}/lesshist"
 export MANWIDTH=${MANWIDTH:-80}
 export PASSWORD_STORE_DIR="${XDG_CONFIG_HOME:-$HOME/.config}/passwordstore"
 export SCREENRC="${XDG_CONFIG_HOME:-$HOME/.config}/screenrc"
+export BAT_THEME="fly16"
+export FZF_DEFAULT_OPTS='
+ --color=fg:#b2b2b2,bg:-1,hl:#8cc85f
+ --color=fg+:#e4e4e4,bg+:-1,hl+:#85dc85
+ --color=info:#323437,prompt:#36c692,pointer:#ae81ff
+ --color=marker:#d183e8,spinner:#e3c78a,header:#ff5189'
+
 
 # Vim stuffs
 export MYVIMRC="${XDG_CONFIG_HOME:-$HOME/.config}/vim/vimrc"
