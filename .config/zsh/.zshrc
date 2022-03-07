@@ -37,19 +37,6 @@ plugins=()
 
 source $ZSH/oh-my-zsh.sh
 
-# User configuration
-
-export MANWIDTH=${MANWIDTH:-80}
-man() {
-    LESS_TERMCAP_md=$'\e[01;38;5;147m' \
-    LESS_TERMCAP_me=$'\e[0m' \
-    LESS_TERMCAP_se=$'\e[0m' \
-    LESS_TERMCAP_so=$'\e[48;5;235;01;38;5;250m' \
-    LESS_TERMCAP_ue=$'\e[0m' \
-    LESS_TERMCAP_us=$'\e[38;5;104m' \
-    command man "$@"
-}
-
 # Behaviour
 setopt nonomatch
 setopt interactivecomments
@@ -166,7 +153,7 @@ alias glog2="git log --graph --abbrev-commit --decorate --format=format:'%Cgreen
 alias glog='git log --pretty="%Cgreen%H%Creset [%G?] %cn: %s %Cred%d%Creset"'
 alias irssi="irssi --home=${XDG_DATA_HOME:-$HOME/.config/irssi}"
 alias ip='ip -c'
-alias ls='ls --color=auto'
+alias ls='lsd'
 alias l='ls -lAh'
 alias mutt='neomutt'
 alias mv='mv -i'
