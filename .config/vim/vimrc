@@ -1,11 +1,17 @@
 runtime! archlinux.vim
+set nocompatible
 scriptencoding utf-8
 
-set directory=$XDG_CACHE_HOME/vim,~/,/tmp
-set backupdir=$XDG_CACHE_HOME/vim,~/,/tmp
-set viminfo+=n$XDG_CACHE_HOME/vim/viminfo
+set directory=$XDG_CACHE_HOME/vim,/tmp
+set backupdir=$XDG_CACHE_HOME/vim,/tmp
+set viminfo=%,<800,'10,/50,:100,h,f0,n$XDG_CACHE_HOME/vim/.viminfo
 let $MYVIMRC="$XDG_CONFIG_HOME/vim/vimrc"
 set runtimepath=$XDG_CONFIG_HOME/vim,$XDG_CONFIG_HOME/vim/after,$VIM,$VIMRUNTIME,$VIM/vimfiles,$VIM/vimfiles/after
+
+" Check if the backup/swap dir exists
+if !isdirectory($XDG_CACHE_HOME)
+  !mkdir $XDG_CACHE_HOME
+endif
 
 " behaviour
 set history=200
@@ -14,12 +20,15 @@ set ruler
 set cursorline
 set showmatch
 set hlsearch
-set nocompatible
 set backspace=2
 set incsearch
 set formatoptions+=tcroqn2bmj
 set number
 set nowrap
+set splitright
+
+" Fix shift-tab
+exe 'set t_kB=' . nr2char(27) . '[Z'
 
 " Enable mouse support
 set mouse=a
@@ -48,7 +57,11 @@ syntax enable
 set background=dark
 set colorcolumn=81
 
-" Colorscheme overrides, for transparency and other stuff
+
+"let &t_8f = "\<Esc>[38:2:%lu:%lu:%lum"
+"let &t_8b = "\<Esc>[48:2:%lu:%lu:%lum"
+
+" Colorscheme overrides, for transparency
 let g:moonflyTransparent = 1
 let g:moonflyCursorColor = 1
 let g:moonflyTerminalColors = 1
@@ -87,6 +100,10 @@ set encoding=utf-8
 set fileformats=unix
 
 set grepprg=grep\ -nH\ $*
+
+"set statusline+=%#warningmsg#
+"set statusline+=%{SyntasticStatuslineFlag()}
+"set statusline+=%*
 
 let g:syntastic_always_populate_loc_list = 1
 let g:syntastic_auto_loc_list            = 1
@@ -139,6 +156,8 @@ set makeprg=GCC_COLORS=\ make
 
 vnoremap // y/\V<C-R>"<CR>
 vnoremap (( <ESC>`>a)<ESC>`<i(<ESC>
+vnoremap [[ <ESC>`>a]<ESC>`<i[<ESC>
+vnoremap {{ <ESC>`>a}<ESC>`<i{<ESC>
 
 match ErrorMsg '\%>80v.\+'
 match ErrorMsg '\( \|	\)\+$'
@@ -182,8 +201,8 @@ autocmd VimSuspend * call system("xsel -ib", getreg())
 "   5 -> blinking vertical bar
 "   6 -> solid vertical bar
 "   7 -> snowman
-au VimEnter * silent execute "!echo -ne '\e[2 q'"
-"au VimLeave * silent execute "!echo -e '\e[6 q'
+au VimEnter    * silent execute "!echo -e '\e[2 q'"
+au VimLeave    * silent execute "!echo -e '\e[6 q'"
 au InsertEnter * silent execute "!echo -ne '\e[6 q'"
 au InsertLeave * silent execute "!echo -ne '\e[2 q'"
 
