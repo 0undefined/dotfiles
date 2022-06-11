@@ -133,31 +133,20 @@ let g:vimtex_compiler_latexrun = {
 let g:latex_view_general_viewer = 'zathura'
 let g:vimtex_view_method = 'zathura'
 
-function! Synctex()
-  " remove 'silent' for debugging
-  execute "silent !mv -u latex.out/" . expand('%:t:r') . ".synctex.gz ."
-  execute "silent !zathura --synctex-forward " . line('.') . ":" . col('.') . ":" . bufname('%') . " " . expand('%:t:r') . ".pdf"
-  redraw!
-endfunction
-
-autocmd BufReadPost *.tex set spell spelllang=en_US
-
-""" /LATEX STUFFS
-
-au BufNewFile,BufRead /tmp/[a-zA-Z0-9]\+/ setlocal ft=sh
-
 " Remove trailing cancer on write
 autocmd BufWritePre * %s/\s\+$//e
-autocmd BufWritePost *.tex !latexrun --bibtex-cmd="biber" --latex-args="-synctex=1 -interaction=nonstopmode" %
+
+" Set tmp-file default type to `sh` (used when editing command line)
+autocmd BufNewFile,BufRead /tmp/[a-zA-Z0-9]\+/ setlocal ft=sh
 
 autocmd BufReadPre *.asm !set ft=nasm
 
 set makeprg=GCC_COLORS=\ make
 
-vnoremap // y/\V<C-R>"<CR>
-vnoremap (( <ESC>`>a)<ESC>`<i(<ESC>
-vnoremap [[ <ESC>`>a]<ESC>`<i[<ESC>
-vnoremap {{ <ESC>`>a}<ESC>`<i{<ESC>
+vmap     // y/\V<C-R>"<CR>
+vnoremap <leader>( <ESC>`>a)<ESC>`<i(<ESC>
+vnoremap <leader>[ <ESC>`>a]<ESC>`<i[<ESC>
+vnoremap <leader>{ <ESC>`>a}<ESC>`<i{<ESC>
 
 match ErrorMsg '\%>80v.\+'
 match ErrorMsg '\( \|	\)\+$'
@@ -201,10 +190,10 @@ autocmd VimSuspend * call system("xsel -ib", getreg())
 "   5 -> blinking vertical bar
 "   6 -> solid vertical bar
 "   7 -> snowman
-au VimEnter    * silent execute "!echo -e '\e[2 q'"
-au VimLeave    * silent execute "!echo -e '\e[6 q'"
-au InsertEnter * silent execute "!echo -ne '\e[6 q'"
-au InsertLeave * silent execute "!echo -ne '\e[2 q'"
+autocmd VimEnter    * silent execute "!echo -e '\e[2 q'"
+autocmd VimLeave    * silent execute "!echo -e '\e[6 q'"
+autocmd InsertEnter * silent execute "!echo -ne '\e[6 q'"
+autocmd InsertLeave * silent execute "!echo -ne '\e[2 q'"
 
 " Undercurls
 let &t_Cs = "\e[4:3m"
