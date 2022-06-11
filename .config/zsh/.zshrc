@@ -187,17 +187,24 @@ alias emacs='vim'
 BANNERFILE=~/.config/texts/todo.md
 
 printwithcolors() {
+  # Formatting
   local title='s/^(#+.*)/\\e[1;92m\1\\e[0m/g'
+  local bold='s/\*(.*)\*/\\e[1m\1\\e[0m/g'
+  local italics='s/_(.*)_/\\e[3m\1\\e[0m/g'
+  local strikeout='s/~~(.*)~~/\\e[9m\1\\e[0m/g'
+
+  # Colors
   local onion='s/(﨩)/\\e[35m\1\\e[0m/g'
   local progress='s/\[([0-9]+)\/([0-9]+)\]/\\e[33m[\1\/\2]\\e[0m/g'
   local comment='s/ *\((.*)\)/  \\e[90m\1\\e[0m/g'
+  local git='s/([Gg]it[a-zA-Z]*)/\\e[38;5;222m\1\\e[0m/g'
   local points='s/^( *)(\*|\+|\-)/\1\\e[34m\2\\e[0m/g'
-
+l
   local rarrow='s/->/→/g;s/=>/⇒/g'
   local larrow='s/<-/←/g;s/<=/⇐/g'
   local arrows="$rarrow;$larrow"
 
-  echo -e "$(sed -Ee "$onion;$title;$progress;$comment;$points;$arrows" $1)"
+  echo -e "$(sed -Ee "$title;$bold;$italics;$strikeout;$onion;$progress;$comment;$git;$points;$arrows" $1)"
 }
 
 if [[ $(tput cols) -gt 140 ]]; then
