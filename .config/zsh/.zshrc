@@ -19,10 +19,7 @@ export ZSH="${XDG_CONFIG_HOME:-$HOME/.config}/oh-my-zsh"
 ZSH_THEME="0undefined"
 ZSH_CUSTOM="${XDG_CONFIG_HOME:-$HOME/.config}/zsh/custom"
 
-# Uncomment the following line to use case-sensitive completion.
 CASE_SENSITIVE="true"
-
-# Uncomment the following line to disable bi-weekly auto-update checks.
 DISABLE_AUTO_UPDATE="true"
 
 # Uncomment the following line if pasting URLs and other text is messed up.
@@ -134,6 +131,14 @@ function screengrab() {
   ffmpeg -f x11grab -r 20 -s ${SIZE} -i :0.0+${POS} -r 20 out.gif
 }
 
+function timeuntil() {
+  if ! [[ "${1}" =~ "[0-9]{4}-[0-9]{1,2}-[0-9]{1,2} [0-9]{2}:[0-9]{2}" ]]; then
+    echo "argument must be of the form \"YYYY-DD-MM hh:mm\""
+  else
+    date -u -d @$(($(date -d "${1}" +%s) - $(date +%s) - 24 * 60 * 60)) '+[%d %H:%M:%S]'
+  fi
+}
+
 fr () {
   which futhark > /dev/null
   if [ ! -z $? ]; then
@@ -142,8 +147,16 @@ fr () {
   futhark repl
 }
 
+function get_dhcp_replies () {
+  if [ $# -eq 0 ]; then
+    doas tcpdump -i enp0s31f6 -n -e port 68 |& sed -Ee "/Reply/!d"
+  else
+    doas tcpdump -i enp0s31f6 -n -e port 68 |& sed -Ee "/Reply/!d;/${1}/d"
+  fi
+}
+
 ## Aliases
-alias :q='exit'
+alias c='cd $(tree -dfqi --noreport | fzf)'
 alias diff='diff --color=auto'
 alias dmesg='dmesg --color=auto'
 alias fsharpc='fsharpc --nologo --standalone'
@@ -159,11 +172,10 @@ alias mutt='neomutt'
 alias mv='mv -i'
 alias pbcopy='xclip -selection clipboard -i'
 alias pbpaste='xclip -selection clipboard -o'
-alias push='git push && mpgv ~/downloads/mario_power_up.mp3'
 alias s='vim $(fzf)'
 alias scan='nmcli d wifi rescan'
 alias sudo='doas'
-alias v='echo -ne "\e[1 q" && vim --servername vim'
+alias v='vim --servername vim'
 alias ptop="ps -o pid,user,size,pcpu,command --sort size cx"
 alias vbox='virtualbox'
 
@@ -175,12 +187,17 @@ alias emacs='vim'
 BANNERFILE=~/.config/texts/todo.md
 
 printwithcolors() {
-  local title='s/^(#+.*)/\\e[1;38;5;71m\1\\e[0m/g'
-  local onion='s/(﨩)/\\e[38;5;147m\1\\e[0m/g'
-  local progress='s/\[([0-9]+)\/([0-9]+)\]/\\e[38;5;229m[\1\/\2]\\e[0m/g'
-  local comment='s/ *\((.*)\)/  \\e[3;38;5;237m\1\\e[0m/g'
-  local git='s/([Gg]it[a-zA-Z]*)/\\e[38;5;222m\1\\e[0m/g'
-  echo -e "$(sed -Ee "$onion;$title;$progress;$comment;$git" $1)"
+  local title='s/^(#+.*)/\\e[1;92m\1\\e[0m/g'
+  local onion='s/(﨩)/\\e[35m\1\\e[0m/g'
+  local progress='s/\[([0-9]+)\/([0-9]+)\]/\\e[33m[\1\/\2]\\e[0m/g'
+  local comment='s/ *\((.*)\)/  \\e[90m\1\\e[0m/g'
+  local points='s/^( *)(\*|\+|\-)/\1\\e[34m\2\\e[0m/g'
+
+  local rarrow='s/->/→/g;s/=>/⇒/g'
+  local larrow='s/<-/←/g;s/<=/⇐/g'
+  local arrows="$rarrow;$larrow"
+
+  echo -e "$(sed -Ee "$onion;$title;$progress;$comment;$points;$arrows" $1)"
 }
 
 if [[ $(tput cols) -gt 140 ]]; then

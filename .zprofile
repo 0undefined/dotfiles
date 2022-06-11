@@ -39,6 +39,13 @@ export FZF_DEFAULT_OPTS='
  --color=info:#323437,prompt:#36c692,pointer:#ae81ff
  --color=marker:#d183e8,spinner:#e3c78a,header:#ff5189'
 
+# Pager stuffs
+export LESS_TERMCAP_md=$'\e[01;38;5;147m'
+export LESS_TERMCAP_me=$'\e[0m'
+export LESS_TERMCAP_se=$'\e[0m'
+export LESS_TERMCAP_so=$'\e[48;5;235;01;38;5;250m'
+export LESS_TERMCAP_ue=$'\e[0m'
+export LESS_TERMCAP_us=$'\e[38;5;104m'
 
 # Vim stuffs
 export MYVIMRC="${XDG_CONFIG_HOME:-$HOME/.config}/vim/vimrc"
