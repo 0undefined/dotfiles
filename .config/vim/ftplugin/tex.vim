@@ -1,26 +1,63 @@
-imap FTT \texttt{}<Esc>i
-imap FBF \textbf{}<Esc>i
-imap FIT \textit{}<Esc>i
-imap MTT \mathtt{}<Esc>i
-imap MBF \mathbf{}<Esc>i
-imap MIT \mathit{}<Esc>i
+function! GetMainDoc()
+  let l:maindoc = search('\\begin{document}', "cnw")
+  if l:maindoc > 0
+    return '%'
+  else
+    " Find the main document file
+    " Must be in the same folder of the current file
+    let l:maindocs = split(system("grep -lE '\\\\begin{document}' " . expand('%:h') . "/*.tex"), '\n')
+    if len(l:maindocs) > 0
+      " Use the first document containing `begin{document}`
+      return l:maindocs[0]
+    else
+      return ""
+    endif
+  endif
+endfunction
 
-imap MCC \mathcal{}<++><Esc>T{i
+function! CompileMainDoc()
+  let l:latexcmd ='autocmd BufWritePost <buffer> !
+                 \ latexrun --latex-args="-synctex=1 -interaction=nonstopmode" '
 
-inoremap <C-j> <Esc>/<++><CR>cf>
-noremap <C-j> /<++><CR>cf>
+  execute(l:latexcmd . GetMainDoc())
+endfunction
 
-vnoremap `IT <ESC>`>a}<ESC>`<i\textit{<ESC>
-vnoremap `BF <ESC>`>a}<ESC>`<i\textbf{<ESC>
-vnoremap `TT <ESC>`>a}<ESC>`<i\texttt{<ESC>
-vnoremap `MI <ESC>`>a}<ESC>`<i\mathit{<ESC>
-vnoremap `MB <ESC>`>a}<ESC>`<i\mathbf{<ESC>
-vnoremap `MT <ESC>`>a}<ESC>`<i\mathtt{<ESC>
+function! Synctex()
+  " remove 'silent' for debugging
+  let l:doc = GetMainDoc()
+  execute "silent !mv -u latex.out/" . substitute(l:doc, '\.tex', '') . ".synctex.gz ."
+  execute "silent !zathura --synctex-forward " . line('.') . ":" . col('.') . ":" . bufname('%') . " " . expand('%:t:r') . ".pdf"
+  redraw!
+endfunction
+
+imap <buffer> FTT \texttt{}<Esc>i
+imap <buffer> FBF \textbf{}<Esc>i
+imap <buffer> FIT \textit{}<Esc>i
+imap <buffer> FSC \textsc{}<Esc>i
+imap <buffer> MTT \mathtt{}<Esc>i
+imap <buffer> MBF \mathbf{}<Esc>i
+imap <buffer> MIT \mathit{}<Esc>i
+imap <buffer> MSC \mathsc{}<Esc>i
+
+imap <buffer> MCC \mathcal{}<++><Esc>T{i
+
+inoremap <buffer> <C-j> <Esc>/<++><CR>cf>
+noremap  <buffer> <C-j> /<++><CR>cf>
+
+vnoremap <buffer> `it <ESC>`>a}<ESC>`<i\textit{<ESC>
+vnoremap <buffer> `bf <ESC>`>a}<ESC>`<i\textbf{<ESC>
+vnoremap <buffer> `tt <ESC>`>a}<ESC>`<i\texttt{<ESC>
+vnoremap <buffer> `mi <ESC>`>a}<ESC>`<i\mathit{<ESC>
+vnoremap <buffer> `mb <ESC>`>a}<ESC>`<i\mathbf{<ESC>
+vnoremap <buffer> `mt <ESC>`>a}<ESC>`<i\mathtt{<ESC>
 
 " put \begin{} \end{} tags tags around the current word
-autocmd BufRead *.tex map  <C-B>      YpkI\begin{<ESC>A}<ESC>jI\end{<ESC>A}<esc>kA
-autocmd BufRead *.tex map! <C-B> <ESC>YpkI\begin{<ESC>A}<ESC>jI\end{<ESC>A}<esc>kA
-autocmd BufRead *.tex map <C-M> :call Synctex()<CR>
+vnoremap  <C-B>      YpkI\begin{<ESC>A}<ESC>jI\end{<ESC>A}<esc>kA
+nmap <C-M> :call Synctex()<CR>
+
+"setlocal spell spelllang=en_US
+
+call CompileMainDoc()
 
 " autocmd BufRead *.tex imap  /\         \land
 " autocmd BufRead *.tex imap  \/         \lor

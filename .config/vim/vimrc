@@ -26,6 +26,7 @@ set formatoptions+=tcroqn2bmj
 set number
 set nowrap
 set splitright
+set conceallevel=2
 
 " Fix shift-tab
 exe 'set t_kB=' . nr2char(27) . '[Z'
@@ -57,15 +58,11 @@ syntax enable
 set background=dark
 set colorcolumn=81
 
-
-"let &t_8f = "\<Esc>[38:2:%lu:%lu:%lum"
-"let &t_8b = "\<Esc>[48:2:%lu:%lu:%lum"
-
 " Colorscheme overrides, for transparency
-let g:moonflyTransparent = 1
-let g:moonflyCursorColor = 1
+let g:moonflyTransparent    = 1
+let g:moonflyCursorColor    = 1
 let g:moonflyTerminalColors = 1
-let g:moonflyUndercurls = 1
+let g:moonflyUndercurls     = 1
 
 let g:jellybeans_overrides = { 'background': {
 \ 'guibg':      'none',
@@ -117,7 +114,6 @@ let g:syntastic_disabled_filetypes=['asm', 's', 'latex', 'tex', 'javac', 'java']
 let g:tex_flavor='latex'
 let g:vimtex_view_method='zathura'
 let g:vimtex_quickfix_mode=0
-set conceallevel=2
 let g:tex_conceal='abdmg'
 let g:vimtex_compiler_method = 'latexrun'
 let g:vimtex_compiler_latexrun = {
@@ -168,6 +164,10 @@ map <ScrollWheelUp> <C-Y>
 imap <C-E> <ESC>A
 imap <C-A> <ESC>I
 
+" Fuzzy Wuzzy bindings
+noremap <C-f> :Files<cr>
+noremap <C-b> :Buffers<cr>
+
 "autocmd VimEnter * silent !echo -ne "\e[1 q"
 "autocmd VimResume * silent !echo -ne "\e[1 q"
 
@@ -195,8 +195,8 @@ autocmd VimLeave    * silent execute "!echo -e '\e[6 q'"
 autocmd InsertEnter * silent execute "!echo -ne '\e[6 q'"
 autocmd InsertLeave * silent execute "!echo -ne '\e[2 q'"
 
-" Undercurls
+" Undercurls/spelling
 let &t_Cs = "\e[4:3m"
 let &t_Ce = "\e[4:0m"
-hi SpellBad   guisp=red    gui=undercurl guifg=NONE guibg=NONE ctermfg=NONE ctermbg=NONE term=underline cterm=undercurl ctermul=red
-hi SpellCap   guisp=yellow    gui=undercurl guifg=NONE guibg=NONE ctermfg=NONE ctermbg=NONE term=underline cterm=undercurl ctermul=yellow
+highlight SpellBad   guisp=red    gui=undercurl guifg=NONE guibg=NONE ctermfg=NONE ctermbg=NONE term=underline cterm=undercurl ctermul=red
+highlight SpellCap   guisp=yellow    gui=undercurl guifg=NONE guibg=NONE ctermfg=NONE ctermbg=NONE term=underline cterm=undercurl ctermul=yellow
