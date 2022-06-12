@@ -14,12 +14,15 @@ if [ "$TERM" = "linux" ]; then
 fi
 
 # Path to your oh-my-zsh installation.
-export ZSH="${XDG_CONFIG_HOME:-$HOME/.config}/oh-my-zsh"
+export ZSH="${XDG_CONFIG_HOME:-$HOME/.config}/ohmyzsh"
 
 ZSH_THEME="0undefined"
 ZSH_CUSTOM="${XDG_CONFIG_HOME:-$HOME/.config}/zsh/custom"
 
+# Uncomment the following line to use case-sensitive completion.
 CASE_SENSITIVE="true"
+
+# Uncomment the following line to disable bi-weekly auto-update checks.
 DISABLE_AUTO_UPDATE="true"
 
 # Uncomment the following line if pasting URLs and other text is messed up.
@@ -199,7 +202,7 @@ printwithcolors() {
   local comment='s/ *\((.*)\)/  \\e[90m\1\\e[0m/g'
   local git='s/([Gg]it[a-zA-Z]*)/\\e[38;5;222m\1\\e[0m/g'
   local points='s/^( *)(\*|\+|\-)/\1\\e[34m\2\\e[0m/g'
-l
+
   local rarrow='s/->/→/g;s/=>/⇒/g'
   local larrow='s/<-/←/g;s/<=/⇐/g'
   local arrows="$rarrow;$larrow"
@@ -208,9 +211,10 @@ l
 }
 
 if [[ $(tput cols) -gt 140 ]]; then
-  [ "$TERM" =~ .*256.* ] && printwithcolors $BANNERFILE || pr -mtW 140 $BANNERFILE ~/.config/texts/setsail
+  [ "$TERM" =~ .*256.* ] && [ -e "${BANNERFILE}" ] && printwithcolors $BANNERFILE
 fi
 
-[ -n "$SSH_CLIENT" ] && ! [[ "$TERM" =~ ^screen.*$ ]] && screen -T screen-256color -s zsh -R && exit 0
+# Use screen if in a ssh session
+[ -n "$SSH_CLIENT" ] && ! [[ "$TERM" =~ ^screen.*$ ]] && TERM=st-256color screen -T screen-256color -s zsh -R && exit 0
 
 true
