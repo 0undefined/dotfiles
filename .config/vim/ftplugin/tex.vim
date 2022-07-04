@@ -5,7 +5,7 @@ function! GetMainDoc()
   else
     " Find the main document file
     " Must be in the same folder of the current file
-    let l:maindocs = split(system("grep -lE '\\\\begin{document}' " . expand('%:h') . "/*.tex"), '\n')
+    let l:maindocs = split(system("grep -lE '\\begin{document}' " . expand('%:h') . "/*.tex"), '\n')
     if len(l:maindocs) > 0
       " Use the first document containing `begin{document}`
       return l:maindocs[0]
