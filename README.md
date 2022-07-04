@@ -44,8 +44,9 @@ cp -r .zprofile .xinitrc ~
   folder. Opens the document in your `$EDITOR` of choice. Fallbacks to `vim` by
   default.
 * emoji: LukeSmiths `dmenu_unicode` script.
-* latexrun: pdflatex python wrapper that automates references and puts all
-  auxiliary files in a folder, nice and tidy.
+* [latexrun](https://github.com/aclements/latexrun): pdflatex python wrapper
+  that automates references and puts all auxiliary files in a folder, nice and
+  tidy.
 * open_book: as `edit_document`, opens a prompt with all `.pdf` files in your
   `~/books` folder. Opens the chosen document in `$READER`, falls back to
   `zathura` if `$READER` is not set.
