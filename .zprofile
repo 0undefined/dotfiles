@@ -75,4 +75,7 @@ export CARGO_HOME="${XDG_CACHE_HOME:-$HOME/.cache}/cargo"
 export CARGO_HOME="${XDG_DATA_HOME:-$HOME/.local/share}/cargo"
 export RUSTUP_HOME="${XDG_CACHE_HOME:-$HOME/.cache}/rustup"
 
+# Build bat cache if necessary
+$(which bat >/dev/null) && ! [ -f "${XDG_CACHE_HOME}/bat/themes.bin" ] && bat cache --build >/dev/null || true
+
 [ "$(tty)" = "/dev/tty1" ] && ! pidof Xorg >/dev/null 2>&1 && exec startx "$XINITRC"
