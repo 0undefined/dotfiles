@@ -88,7 +88,7 @@ set tags+=../tags
 
 
 " adding pathogen
-execute pathogen#infect('bundle/{}')
+execute pathogen#infect('plugins/{}')
 filetype plugin indent on
 
 " encodings

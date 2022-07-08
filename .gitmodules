@@ -1,3 +1,9 @@
 [submodule ".config/ohmyzsh"]
 	path = .config/ohmyzsh
 	url = https://github.com/ohmyzsh/ohmyzsh.git
+[submodule ".config/vim/plugins/fzf.vim"]
+	path = .config/vim/plugins/fzf.vim
+	url = https://github.com/junegunn/fzf.vim.git
+[submodule ".config/vim/plugins/vimtex"]
+	path = .config/vim/plugins/vimtex
+	url = https://github.com/lervag/vimtex.git
