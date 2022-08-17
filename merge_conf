@@ -1,0 +1,26 @@
+#!/usr/bin/env sh
+
+SUBMODULES=$(git submodule status | sed -E 's/ [a-z0-9]+ ([^ ]+) .*/\1/')
+FILES=$(tree -aqifF --noreport --prune .local .config | sed -E '/\/$/d;s/\*$//')
+
+for submodule in ${SUBMODULES}; do
+  SS=$(printf '%s' "${submodule}" | sed 's/\//\\\//g;s/\./\\./g')
+  FILES=$(printf '%s' "${FILES}" | sed -E "/${SS}/d")
+done
+
+function copy() {
+  local FILE="${1}"
+  echo -ne "missing $FILE\n"
+  read -p "copy to local config? [y/n]:" yn
+  case $yn in
+    [Yy]*) cp $f ~/$f;;
+    [Nn]*) return;;
+  esac
+}
+
+for f in ${FILES}; do
+  [ -e "${HOME}/${f}" ] || copy $f
+
+  diff -q "${HOME}/${f}" "${f}" >/dev/null
+  [ $? -ne 0 ] && vimdiff "${HOME}/${f}" "${f}"
+done
