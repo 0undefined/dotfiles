@@ -1,9 +1,14 @@
 # For automatic lock on suspend/hibernation
 systemctl --user import-environment DISPLAY
+
 # Notification daemon
 dunst &
+#
 # Composite manager, for blur and other neat effects
 picom --blur-method dual_kawase --blur-strength 2 --experimental-backends --backend glx &
+
+# Fonts
+xset +fp "${XDG_FONTS:-$HOME/.local/share/fonts}"
 
 # Disable mouse acceleration
 xset m 0 0 &

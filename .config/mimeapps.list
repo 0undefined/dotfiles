@@ -1,5 +1,5 @@
 [Added Associations]
-application/pdf=com.github.xournalpp.xournalpp.desktop;org.pwmt.zathura-pdf-mupdf.desktop;org.gnome.Evince.desktop;firefox-developer-edition.desktop;
+application/pdf=org.pwmt.zathura.desktop;org.pwmt.zathura.desktop;com.github.xournalpp.xournalpp.desktop;firefox-developer-edition.desktop;
 text/plain=vim.desktop;
 application/postscript=org.gnome.Evince.desktop;firefox-developer-edition.desktop;
 unknown/unknown=vim.desktop;
@@ -34,3 +34,4 @@ application/x-extension-shtml=firefox-developer-edition.desktop
 application/xhtml+xml=firefox-developer-edition.desktop
 application/x-extension-xhtml=firefox-developer-edition.desktop
 application/x-extension-xht=firefox-developer-edition.desktop
+x-scheme-handler/discord-402572971681644545=discord-402572971681644545.desktop

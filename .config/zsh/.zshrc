@@ -159,7 +159,7 @@ function get_dhcp_replies () {
 }
 
 ## Aliases
-alias c='cd $(tree -dfqi --noreport | fzf)'
+alias c=$'cd $(tree -dnfqi --noreport | sed -Ee "s/^\\.\\///g" | fzf)'
 alias diff='diff --color=auto'
 alias dmesg='dmesg --color=auto'
 alias fsharpc='fsharpc --nologo --standalone'
@@ -170,13 +170,14 @@ alias glog='git log --pretty="%Cgreen%H%Creset [%G?] %cn: %s %Cred%d%Creset"'
 alias irssi="irssi --home=${XDG_DATA_HOME:-$HOME/.config/irssi}"
 alias ip='ip -c'
 alias ls='lsd'
-alias l='ls -lAh'
+alias l='[ $(( $(tput cols) )) -lt 80 ] && ls -Ah || ls -lAh'
 alias mutt='neomutt'
 alias mv='mv -i'
 alias pbcopy='xclip -selection clipboard -i'
 alias pbpaste='xclip -selection clipboard -o'
 alias s='vim $(fzf)'
 alias scan='nmcli d wifi rescan'
+alias screen='TERM=st-256color screen -T screen-256color -s zsh'
 alias sudo='doas'
 alias v='vim --servername vim'
 alias ptop="ps -o pid,user,size,pcpu,command --sort size cx"
@@ -215,6 +216,6 @@ if [[ $(tput cols) -gt 140 ]]; then
 fi
 
 # Use screen if in a ssh session
-[ -n "$SSH_CLIENT" ] && ! [[ "$TERM" =~ ^screen.*$ ]] && TERM=st-256color screen -T screen-256color -s zsh -R && exit 0
+[ -n "$SSH_CLIENT" ] && ! [[ "$TERM" =~ ^screen.*$ ]] && screen -R && exit 0
 
 true

@@ -6,7 +6,7 @@ set directory=$XDG_CACHE_HOME/vim,/tmp
 set backupdir=$XDG_CACHE_HOME/vim,/tmp
 set viminfo=%,<800,'10,/50,:100,h,f0,n$XDG_CACHE_HOME/vim/.viminfo
 let $MYVIMRC="$XDG_CONFIG_HOME/vim/vimrc"
-set runtimepath=$XDG_CONFIG_HOME/vim,$XDG_CONFIG_HOME/vim/after,$VIM,$VIMRUNTIME,$VIM/vimfiles,$VIM/vimfiles/after
+set runtimepath=$XDG_CONFIG_HOME/vim,$XDG_CONFIG_HOME/vim/after,$VIM,$VIMRUNTIME,$VIM/vimfiles,$VIM/vimfiles/after,$VIM/vimfiles/plugin/
 
 " Check if the backup/swap dir exists
 if !isdirectory($XDG_CACHE_HOME)
@@ -199,4 +199,4 @@ autocmd InsertLeave * silent execute "!echo -ne '\e[2 q'"
 let &t_Cs = "\e[4:3m"
 let &t_Ce = "\e[4:0m"
 highlight SpellBad   guisp=red    gui=undercurl guifg=NONE guibg=NONE ctermfg=NONE ctermbg=NONE term=underline cterm=undercurl ctermul=red
-highlight SpellCap   guisp=yellow    gui=undercurl guifg=NONE guibg=NONE ctermfg=NONE ctermbg=NONE term=underline cterm=undercurl ctermul=yellow
+highlight SpellCap   guisp=yellow gui=undercurl guifg=NONE guibg=NONE ctermfg=NONE ctermbg=NONE term=underline cterm=undercurl ctermul=yellow
