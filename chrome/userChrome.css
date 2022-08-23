@@ -18,7 +18,7 @@
   --arrowpanel-border-color: #000a0e !important;
   --autocomplete-popup-highlight-background: #000a0e !important;
 
-  --button-hover-bgcolor:         var(--sel-fg) !important;
+  --button-hover-bgcolor:         var(--sel-bg) !important;
   --button-primary-hover-bgcolor: var(--sel-fg) !important;
 
   --in-content-border-hover:            var(--sel-fg) !important;
@@ -203,16 +203,29 @@ window,
   border-image-slice: 0 !important;
 }
 
+#urlbar-input[focused=true] {
+  padding: 0pt;
+}
 #urlbar-input {
   background-color: transparent !important;
   padding: 2pt !important;
 }
-#urlbar-input[focused=true] {
-	border-width: 5px !important;
+.urlbarView {
+  background: rgba(0,0,0,0.75) !important;
+  /*color: red !important;*/
+  margin: 5pt !important;
+  width: 100% !important;
+  position: absolute !important;
+  box-shadow: 0 0 5pt black !important;
+  border-radius: 4pt !important;
 }
 
+#urlbar-label-box {
+  background-color: rgba(0,0,0,0) !important;
+}
 #urlbar-results {
   background-color: var(--sel-bg) !important;
+  /*background-color: rgba(0,0,0,0) !important;*/
   border-radius: 4pt !important;
 }
 
@@ -235,19 +248,19 @@ window,
   background-color: var(--bg) !important;
 }
 
-urlbar > #urlbar-background {
-  background-color: #f00 !important;
+#urlbar > #urlbar-background {
+  /*border-color: #f00 !important;*/
 }
-
 
 #urlbar[focused="true"] {
-  padding-color: red !important;
   /*box-shadow: inset 0 0 2pt #ff0 !important;*/
 }
+
 #urlbar:active {
 	/*border-width: 5px !important;*/
 }
+
 #urlbar:hover {
- color: var(--cursor) !important;
+ color: var(--sel-fg) !important;
  /*border: 2pt solid #ff0 !important;*/
 }
