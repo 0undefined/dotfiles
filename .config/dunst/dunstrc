@@ -30,6 +30,7 @@ corner_radius   = 0
 stack_duplicates = yes
 sticky_history  = yes
 transparency    = 0
+width           = (300, 750)
 
 [urgency_low]
 frame_color = "#89C8FF"
