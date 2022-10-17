@@ -2,10 +2,19 @@
 
 ARG=${1:-$BLOCK_BUTTON}
 
+# echo -en '<b><u>' | xxd -p -
+TODAY_BEGIN='3c623e3c753e'
+# echo -en '</b></u>' | xxd -p -
+TODAY_END='3c2f753e3c2f623e'
+
 case $ARG in
-	1) notify-send --urgency=low \
-	     "Calendar"        \
-	     "$(cal -w -m)"
+	1) notify-send --urgency=low        \
+	     "Calendar"                     \
+	     "$(cal -w -m --color=always    \
+	       | xxd -p -                   \
+	       | tr -d '\n'                 \
+	       | sed -Ee "s/1b5b376d/${TODAY_BEGIN}/g;s/1b5b32376d/${TODAY_END}/g" \
+         | xxd -p -r -)"
 	;;
 	3) notify-send --urgency=low \
 	     "Weather"        \
