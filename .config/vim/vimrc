@@ -194,7 +194,9 @@ autocmd InsertEnter * silent execute "!echo -ne '\e[6 q'"
 autocmd InsertLeave * silent execute "!echo -ne '\e[2 q'"
 
 " Undercurls/spelling
-let &t_Cs = "\e[4:3m"
-let &t_Ce = "\e[4:0m"
-highlight SpellBad   guisp=red    gui=undercurl guifg=NONE guibg=NONE ctermfg=NONE ctermbg=NONE term=underline cterm=undercurl ctermul=red
-highlight SpellCap   guisp=yellow gui=undercurl guifg=NONE guibg=NONE ctermfg=NONE ctermbg=NONE term=underline cterm=undercurl ctermul=yellow
+if !has('nvim')
+  let &t_Cs = "\e[4:3m"
+  let &t_Ce = "\e[4:0m"
+  highlight SpellBad   guisp=red    gui=undercurl guifg=NONE guibg=NONE ctermfg=NONE ctermbg=NONE term=underline cterm=undercurl ctermul=red
+  highlight SpellCap   guisp=yellow gui=undercurl guifg=NONE guibg=NONE ctermfg=NONE ctermbg=NONE term=underline cterm=undercurl ctermul=yellow
+endif
