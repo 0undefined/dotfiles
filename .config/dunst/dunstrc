@@ -2,7 +2,7 @@
 alignment       = left
 browser         = /usr/bin/firefox-developer-edition -new-tab
 dmenu           = /usr/bin/dmenu -p dunst:
-follow          = none
+follow          = mouse
 font            = DejaVuSansMono Nerd Font Mono 9
 format          = "<b>%s</b>\n%b"
 frame_color     = "#8EC07C"
