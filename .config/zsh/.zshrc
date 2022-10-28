@@ -77,12 +77,22 @@ zle -N zle-keymap-select
 echo -ne '\e[5 q' # Use beam shape cursor on startup.
 # preexec() { echo -ne '\e[5 q' ;} # Use beam shape cursor for each new prompt.
 
+# Allow editing command line in editor
 autoload -Uz edit-command-line
 zle -N edit-command-line
+
+# Bind it to space
 bindkey -M vicmd ' ' edit-command-line
 
-bindkey -a "^e" vi-end-of-line
+# Bind ^A and ^E in visual mode
+bindkey -M vicmd '^e' vi-end-of-line
+bindkey -M vicmd '^a' beginning-of-line
+
+# Regular bindings
+bindkey "^e" vi-end-of-line
 bindkey "^a" beginning-of-line
+
+# Reverse search
 bindkey "^r" history-incremental-search-backward
 
 bindkey "${terminfo[khome]}" beginning-of-line
@@ -92,10 +102,13 @@ bindkey "^[3;5~"             delete-char
 bindkey "^[[1;5C"            forward-word
 bindkey "^[[1;5D"            backward-word
 
+# Load searching upwards with beginning of the line
 autoload -U up-line-or-beginning-search
 autoload -U down-line-or-beginning-search
 zle -N      up-line-or-beginning-search
 zle -N      down-line-or-beginning-search
+
+# Binded twice for compatability
 bindkey "^[A"  up-line-or-beginning-search
 bindkey "^[OA" up-line-or-beginning-search
 bindkey "^[B"  down-line-or-beginning-search
@@ -134,13 +147,6 @@ function screengrab() {
   ffmpeg -f x11grab -r 20 -s ${SIZE} -i :0.0+${POS} -r 20 out.gif
 }
 
-function timeuntil() {
-  if ! [[ "${1}" =~ "[0-9]{4}-[0-9]{1,2}-[0-9]{1,2} [0-9]{2}:[0-9]{2}" ]]; then
-    echo "argument must be of the form \"YYYY-DD-MM hh:mm\""
-  else
-    date -u -d @$(($(date -d "${1}" +%s) - $(date +%s) - 24 * 60 * 60)) '+[%d %H:%M:%S]'
-  fi
-}
 
 fr () {
   which futhark > /dev/null
