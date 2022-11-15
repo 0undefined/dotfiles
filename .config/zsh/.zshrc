@@ -97,10 +97,6 @@ bindkey "^r" history-incremental-search-backward
 
 bindkey "${terminfo[khome]}" beginning-of-line
 bindkey "${terminfo[kend]}"  end-of-line
-bindkey "^[[3~"              delete-char
-bindkey "^[3;5~"             delete-char
-bindkey "^[[1;5C"            forward-word
-bindkey "^[[1;5D"            backward-word
 
 # Load searching upwards with beginning of the line
 autoload -U up-line-or-beginning-search
@@ -109,10 +105,8 @@ zle -N      up-line-or-beginning-search
 zle -N      down-line-or-beginning-search
 
 # Binded twice for compatability
-bindkey "^[A"  up-line-or-beginning-search
-bindkey "^[OA" up-line-or-beginning-search
-bindkey "^[B"  down-line-or-beginning-search
-bindkey "^[OB" down-line-or-beginning-search
+bindkey "${terminfo[kcuu1]}"  up-line-or-beginning-search
+bindkey "${terminfo[kcud1]}"  down-line-or-beginning-search
 
 ## Handy functions
 upload () {
