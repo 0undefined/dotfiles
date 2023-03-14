@@ -85,6 +85,8 @@ def symbol(s: int) -> str:
         return u'\ue33d'
     elif s == 60: # cloudy
         return u'\ue332'
+    elif s == 80: # sunny rainy
+        return u'\ue308'
     elif s == 101: # night clear
         return u'\ue32b'
     elif s == 102: # night cloudy
