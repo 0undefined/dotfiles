@@ -5,6 +5,8 @@ netstatus="$(awk '{
       printf("%-15s %s\n", a[n-1], $1)
     }' /sys/class/net/[ew]*/operstate | sort -k 2)"
 
+VPNSTATUS=$(( $(ps axch -eo comm | sed -En '/openconnect/p' | wc -l) ))
+
 function add_connected_address() {
   TMPIFS="${IFS}"
   IFS='
@@ -34,3 +36,7 @@ else
 fi
 
 echo -en '\x0b'
+
+if [ 0 -lt $VPNSTATUS ]; then
+  echo -en ' \x0f\uf983\x0b'
+fi
