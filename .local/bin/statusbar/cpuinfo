@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/usr/bin/env sh
 set -e
 
 ARG=${1:-$BLOCK_BUTTON}
@@ -20,16 +20,12 @@ case $ARG in
 	;;
 esac
 
+LOAD_1m=$(sed -E 's/^([^ ]+).*/\1/' /proc/loadavg | tr -d '\n')
+
+# Silence is golden
+[ "$(echo "${LOAD_1m} < 1" | bc -l)" -eq 1 ] && exit 0
+
 # Thermals
-# "Never cat something into awk", yeah, but it won't function properly if it
-# encounters a missing `/temp`-file.
-TEMP="$(cat /sys/class/thermal/thermal_zone*/temp 2>/dev/null)"
-TEMP="$(echo "${TEMP}" | awk '{s+=$1}END{printf "%.1f", s / (1000*NR)}' )"
-# Color red if temp > 45
-TEMP=`(( $(echo "$TEMP > 45" | bc -l) )) && echo -en "\x0c${TEMP}\x0b" || echo -en "$TEMP"`
+TEMP="$(awk '{s+=$1}END{printf "%.1f", s / (1000*NR)}' /sys/class/thermal/thermal_zone*/temp)"
 
-# Load
-LOAD=$(sed -Ee 's/^([0-9]+\.[0-9]+) .*/\1/g' /proc/loadavg | tr -d '\n')
-
-
-echo -en "[${LOAD} \x0f\x0b ${TEMP}°]"
+printf "[%s  %s°]" "${LOAD_1m}" "${TEMP}"
