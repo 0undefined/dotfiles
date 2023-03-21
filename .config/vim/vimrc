@@ -2,15 +2,34 @@ runtime! archlinux.vim
 set nocompatible
 scriptencoding utf-8
 
-set directory=$XDG_CACHE_HOME/vim,/tmp
-set backupdir=$XDG_CACHE_HOME/vim,/tmp
-set viminfo=%,<800,'10,/50,:100,h,f0,n$XDG_CACHE_HOME/vim/.viminfo
 let $MYVIMRC="$XDG_CONFIG_HOME/vim/vimrc"
-set runtimepath=$XDG_CONFIG_HOME/vim,$XDG_CONFIG_HOME/vim/after,$VIM,$VIMRUNTIME,$VIM/vimfiles,$VIM/vimfiles/after,$VIM/vimfiles/plugin/
 
-" Check if the backup/swap dir exists
-if !isdirectory($XDG_CACHE_HOME)
-  !mkdir $XDG_CACHE_HOME
+
+if !has('nvim')
+  " Check if the backup/swap dir exists
+  if !isdirectory($XDG_CACHE_HOME . '/vim')
+    silent!mkdir -p "$XDG_CACHE_HOME/vim"
+  endif
+
+  set directory=$XDG_CACHE_HOME/vim,/tmp
+  set backupdir=$XDG_CACHE_HOME/vim,/tmp
+  if has('viminfo')
+    set viminfo=%,'10,<10,/200,:200,h,n$XDG_CACHE_HOME/vim/.viminfo
+  endif
+  set runtimepath=$XDG_CONFIG_HOME/vim,$XDG_CONFIG_HOME/vim/after,$VIM,$VIMRUNTIME,$VIM/vimfiles,$VIM/vimfiles/after,$VIM/vimfiles/plugin
+else
+  " Check if the backup/swap dir exists
+  if !isdirectory($XDG_CACHE_HOME . '/nvim')
+    silent!mkdir -p "$XDG_CACHE_HOME/nvim"
+  endif
+
+  " Neovim option so they don't contaminate eachother
+  set directory=$XDG_CACHE_HOME/nvim,/tmp
+  set backupdir=$XDG_CACHE_HOME/nvim,/tmp
+  if has('viminfo')
+    set viminfo=%,'10,<50,/50,:100,h,f0,n$XDG_CACHE_HOME/nvim/.viminfo
+  endif
+  set runtimepath=$XDG_CONFIG_HOME/vim,$XDG_CONFIG_HOME/vim/after,$VIM,$VIMRUNTIME,$VIM/vimfiles,$VIM/vimfiles/after,$VIM/vimfiles/plugin
 endif
 
 " behaviour
@@ -27,6 +46,7 @@ set number
 set nowrap
 set splitright
 set conceallevel=2
+set title
 
 " Fix shift-tab
 exe 'set t_kB=' . nr2char(27) . '[Z'
@@ -166,12 +186,16 @@ imap <C-A> <ESC>I
 noremap <C-f> :Files<cr>
 noremap <C-b> :Buffers<cr>
 
-"autocmd VimEnter * silent !echo -ne "\e[1 q"
-"autocmd VimResume * silent !echo -ne "\e[1 q"
-
 " Preserve clipboard
 autocmd VimLeave * call system("xsel -ib", getreg())
 autocmd VimSuspend * call system("xsel -ib", getreg())
+
+"augroup CapsLockLED
+"  autocmd!
+"  autocmd InsertEnter * :silent !xset  led named 'Caps Lock'
+"  autocmd InsertLeave * :silent !xset -led named 'Caps Lock'
+"  autocmd VimLeave    * :silent !xset -led named 'Caps Lock'
+"augroup END
 
 "if has("autocmd")
 "  augroup templates
@@ -188,15 +212,28 @@ autocmd VimSuspend * call system("xsel -ib", getreg())
 "   5 -> blinking vertical bar
 "   6 -> solid vertical bar
 "   7 -> snowman
-autocmd VimEnter    * silent execute "!echo -e '\e[2 q'"
-autocmd VimLeave    * silent execute "!echo -e '\e[6 q'"
-autocmd InsertEnter * silent execute "!echo -ne '\e[6 q'"
-autocmd InsertLeave * silent execute "!echo -ne '\e[2 q'"
+"autocmd VimEnter    * silent execute "!echo -e '\e[2 q'"
+"autocmd VimResume   * silent execute "!echo -e '\e[2 q'"
+"autocmd VimLeave    * silent execute "!echo -e '\e[6 q'"
+"autocmd InsertEnter * silent execute "!echo -ne '\e[6 q'"
+"autocmd InsertLeave * silent execute "!echo -ne '\e[2 q'"
+
+
+
+" "Start Insert-mode" line
+let &t_SI = "\e[6 q"
+" "Start Replace-mode" underscore
+let &t_SR = "\e[4 q"
+" "End Insert-mode" block
+let &t_EI = "\e[2 q"
+
+autocmd VimResume * silent execute "!echo -e '\e[2 q'"
 
 " Undercurls/spelling
+let &t_Cs = "\e[4:3m"
+let &t_Ce = "\e[4:0m"
+
 if !has('nvim')
-  let &t_Cs = "\e[4:3m"
-  let &t_Ce = "\e[4:0m"
   highlight SpellBad   guisp=red    gui=undercurl guifg=NONE guibg=NONE ctermfg=NONE ctermbg=NONE term=underline cterm=undercurl ctermul=red
   highlight SpellCap   guisp=yellow gui=undercurl guifg=NONE guibg=NONE ctermfg=NONE ctermbg=NONE term=underline cterm=undercurl ctermul=yellow
 endif
