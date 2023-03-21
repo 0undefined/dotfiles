@@ -19,3 +19,6 @@ set inputbar-fg         \#e4e4e4
 set default-bg          \#000000
 
 set selection-clipboard clipboard
+set scroll-step 80
+set window-title-home-tilde true
+set statusbar-home-tilde true
