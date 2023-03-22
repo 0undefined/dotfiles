@@ -28,4 +28,4 @@ LOAD_1m=$(sed -E 's/^([^ ]+).*/\1/' /proc/loadavg | tr -d '\n')
 # Thermals
 TEMP="$(awk '{s+=$1}END{printf "%.1f", s / (1000*NR)}' /sys/class/thermal/thermal_zone*/temp)"
 
-printf "[%s  %s°]" "${LOAD_1m}" "${TEMP}"
+printf "[%s  %.01f°]\n" "${LOAD_1m}" "${TEMP}"

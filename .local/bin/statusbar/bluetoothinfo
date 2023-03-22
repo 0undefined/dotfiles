@@ -13,7 +13,7 @@ DAEMONSTATUS="$(systemctl is-active bluetooth.service)"
 if [ "$DAEMONSTATUS" == "inactive" ]; then
 	echo -en '\x0c\uf5b1\x0b'
 	case $ARG in
-		1) systemctl start bluetooth.service;;
+		1) systemctl start bluetooth.service || notify-send 'Bluetooth' 'Please start the bluetooth service by running `systemctl start bluetooth.service`';;
 	esac
 else
 	CONNECTED="$(bluetoothctl info | awk '/Name/{$1=""; print $0}')"
@@ -30,4 +30,10 @@ else
 			3) bluetoothctl disconnect
 		esac
 	fi
+fi
+
+if [ "${XDG_SESSION_TYPE}" = "wayland ];then
+  sigblock -b bt
+else
+  sigdwmblocks 4
 fi

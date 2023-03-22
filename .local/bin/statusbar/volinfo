@@ -2,10 +2,28 @@
 
 ARG=${1:-$BLOCK_BUTTON}
 
+SIG="sigdwmblocks 4"
+
+[ "$XDG_SESSION_TYPE" = "wayland" ] && SIG="sigblock -b vol"
+
 case $ARG in
-	1) pamixer -t && sigdwmblocks 4;;
+	1) pamixer -t
+	   $SIG
+	;;
+	4) pamixer -i 5
+	   $SIG
+	;;
+	5) pamixer -d 5
+	   $SIG
+	;;
+	*)
+	;;
 esac
 
 VOL=$(pamixer --get-volume)
 
-[ "$(pamixer --get-mute)" == "true" ] && echo -ne "\x0c\ufa80${VOL}\x0b" || echo -ne "\ufa7d${VOL}"
+if [ "$(pamixer --get-mute)" = "true" ]; then
+  echo -e "\ufa80${VOL}"
+else
+  echo -e "\ufa7d${VOL}"
+fi

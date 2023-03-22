@@ -2,34 +2,53 @@
 
 set -e
 
-status="$(acpi -abi)" # get battery and adapter info
+# get charge of battery/batteries
+POWER="$(acpi -b |\
+  sed -Ee 's/^.* ([0-9]+)%/\1/g' |\
+  awk '//{s+=$1;c++};END{printf "%.1f", s/c}' || true)"
 
-ARG=${1:-$BLOCK_BUTTON}
+# get charging state of adapter
+[ -n "$(acpi -a | sed -E '/on-line/!d' || true)" ] && CHARGING=1
 
-case $ARG in
-	1) notify-send -t $((15 * 1000)) --urgency=low "Battery status" "$status" ;;
-	4) brightnessctl -q s 10%+ ;;
-	5) brightnessctl -q s 10%- ;;
-esac
+ARG=${1:-${BLOCK_BUTTON}}
 
-power=$(echo "${status}" | awk '/Battery [0-9]+: [A-Z]/{s+=$4;c++}; END{printf "%.1f%%", s/c}')
+if [ -n "${ARG}" ]; then
+  if [ -z "${CHARGING}" ]; then
+    CHARGINGTXT="Not charging"
+  else
+    CHARGINGTXT="Charging"
+  fi
 
-icon='?'
-if [[ -z $(echo $status | sed -n '/on-line/p') ]]; then
-	case "${power%.*}" in
-		100 | 9[0-9]) icon='\x0d\uf578\x0b' ;;
-		8[0-9]) icon='\uf581';;
-		7[0-9]) icon='\uf580';;
-		6[0-9]) icon='\uf57f';;
-		5[0-9]) icon='\uf57e';;
-		4[0-9]) icon='\uf57d';;
-		3[0-9]) icon='\uf57c';;
-		2[0-9]) icon='\uf57b';;
-		1[0-9]) icon='\x0e\uf57a\x0b';;
-		[0-9])  icon='\x1c\uf579\x0b';;
-	esac
-else
-	icon='\uf583'
+  case ${ARG} in
+    1) notify-send -t $((15 * 1000)) --urgency=low \
+      "Battery status" \
+      "Battery: ${POWER}\n${CHARGINGTXT}"
+          exit 0;;
+    4) brightnessctl -q s 10%+; exit 0;;
+    5) brightnessctl -q s 10%-; exit 0;;
+    *) exit 1
+  esac
 fi
 
-echo -en "$icon $power"
+[ -n "${CHARGING}" ] && [ -n "$(echo "${POWER%.*}" | sed -En '/9[0-9]|100/p' || true)" ] && exit 0
+
+ICON='?'
+if [ -z "${CHARGING}" ]; then
+	case "${POWER%.*}" in
+		100 | 9[0-9]) ICON=$'\uf578' ;;
+		8[0-9]) ICON=$'\uf581';;
+		7[0-9]) ICON=$'\uf580';;
+		6[0-9]) ICON=$'\uf57f';;
+		5[0-9]) ICON=$'\uf57e';;
+		4[0-9]) ICON=$'\uf57d';;
+		3[0-9]) ICON=$'\uf57c';;
+		2[0-9]) ICON=$'\uf57b';;
+		1[0-9]) ICON=$'\uf57a';;
+		[0-9])  ICON=$'\uf579';;
+    *) exit 1
+	esac
+else
+	ICON=$'\uf583'
+fi
+
+printf "%s %s%%\n" "${ICON}" "${POWER}"
