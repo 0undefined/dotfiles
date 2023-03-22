@@ -28,9 +28,6 @@ DISABLE_AUTO_UPDATE="true"
 # Uncomment the following line if pasting URLs and other text is messed up.
 DISABLE_MAGIC_FUNCTIONS=true
 
-# Uncomment the following line to disable auto-setting terminal title.
-DISABLE_AUTO_TITLE="true"
-
 HIST_STAMPS="yyyy-mm-dd"
 
 plugins=()
@@ -141,6 +138,18 @@ function screengrab() {
   ffmpeg -f x11grab -r 20 -s ${SIZE} -i :0.0+${POS} -r 20 out.gif
 }
 
+function timeuntil() {
+  if ! [[ "${1}" =~ "[0-9]{4}-[0-9]{1,2}-[0-9]{1,2} [0-9]{2}:[0-9]{2}" ]]; then
+    echo "argument must be of the form \"YYYY-MM-DD hh:mm\""
+  else
+    local TDIFF=$(($(date -d "${1}" +%s) - $(date +%s) - 24 * 60 * 60))
+    if [ $(($TDIFF)) -lt 0 ]; then
+      echo 'YEEHAW'
+    else
+      date -u -d @${TDIFF} '+[%d %H:%M:%S]'
+    fi
+  fi
+}
 
 fr () {
   which futhark > /dev/null
@@ -159,7 +168,7 @@ function get_dhcp_replies () {
 }
 
 ## Aliases
-alias c=$'cd $(tree -dnfqi --noreport | sed -Ee "s/^\\.\\///g" | fzf)'
+alias c='cd $(tree -dnfqi --noreport | sed -Ee "s/^\\.\\///g" | fzf)'
 alias diff='diff --color=auto'
 alias dmesg='dmesg --color=auto'
 alias fsharpc='fsharpc --nologo --standalone'
@@ -179,9 +188,14 @@ alias s='vim $(fzf)'
 alias scan='nmcli d wifi rescan'
 alias screen='TERM=st-256color screen -T screen-256color -s zsh'
 alias sudo='doas'
-alias v='vim --servername vim'
 alias ptop="ps -o pid,user,size,pcpu,command --sort size cx"
 alias vbox='virtualbox'
+if ! [ "$XDG_SESSION_TYPE" = "wayland" ]; then
+  alias v='vim --servername vim'
+else
+  alias vim=nvim
+  alias v='nvim'
+fi
 
 # Make sure that nobody makes some silly mistake
 alias nano='vim'
