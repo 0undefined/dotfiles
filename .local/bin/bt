@@ -8,8 +8,13 @@ die() {
 }
 
 sigdwm() {
-  which sigdwmblocks>/dev/null || return
-  sigdwmblocks 4
+  if [ "$XDG_SESSION_TYPE" = "wayland" ]; then
+    sigblock -b bt
+  else
+    which sigdwmblocks>/dev/null || return
+    pgrep dwmblocks>/dev/null || return
+    sigdwmblocks 4
+  fi
 }
 
 # Check if bluetoothctl is in $PATH
