@@ -5,7 +5,9 @@ function! GetMainDoc()
   else
     " Find the main document file
     " Must be in the same folder of the current file
-    let l:maindocs = split(system("grep -lE '\\begin{document}' " . expand('%:h') . "/*.tex"), '\n')
+    let l:maindocscmd = "grep -lrE '\\\\begin{document}' " . expand('%:h') . "/*.tex"
+    let l:maindocssys = system(l:maindocscmd)
+    let l:maindocs = split(l:maindocssys)
     if len(l:maindocs) > 0
       " Use the first document containing `begin{document}`
       return l:maindocs[0]
@@ -24,11 +26,14 @@ endfunction
 
 function! Synctex()
   " remove 'silent' for debugging
-  let l:doc = GetMainDoc()
   execute "silent !mv -u latex.out/" . substitute(l:doc, '\.tex', '') . ".synctex.gz ."
-  execute "silent !zathura --synctex-forward " . line('.') . ":" . col('.') . ":" . bufname('%') . " " . expand('%:t:r') . ".pdf"
+  execute "silent !zathura --synctex-forward " . line('.') . ":" . col('.') . ":" . bufname('%') . " " . g:syncpdf
   redraw!
 endfunction
+nmap <C-M> :call Synctex()<CR>
+
+setlocal spell
+setlocal spelllang=en_us
 
 imap <buffer> FTT \texttt{}<Esc>i
 imap <buffer> FBF \textbf{}<Esc>i
@@ -38,6 +43,38 @@ imap <buffer> MTT \mathtt{}<Esc>i
 imap <buffer> MBF \mathbf{}<Esc>i
 imap <buffer> MIT \mathit{}<Esc>i
 imap <buffer> MSC \mathsc{}<Esc>i
+
+imap <buffer> (( \left(\right)<Esc>F\i
+imap <buffer> {{ \left\{\right\}<Esc>F\F\i
+imap <buffer> [[ \left[\right]<Esc>F\i
+
+imap <buffer> ~~ \neg
+imap <buffer> /\ \land
+imap <buffer> \/ \lor
+imap <buffer> -> \rightarrow
+imap <buffer> ==> \Rightarrow
+imap <buffer> <== \Leftarrow
+imap <buffer> <=> \Leftrightarrow
+imap <buffer> \|- \vdash
+imap <buffer> \|= \vDash
+imap <buffer> !-- \inference[]{%<CR>}{%<CR>}<ESC>kk$F[a
+imap <buffer> !== \begin{align*}<CR>\end{align*}<ESC>O
+imap <buffer> !ii \begin{itemize}<CR>\end{itemize}<ESC>O\item Case<ESC>
+imap <buffer> CC \item Case
+imap <buffer> EIMP \expEimp{<++>}{<++>}{<++>}<ESC>F\<C-j>
+imap <buffer> [[ [\![
+imap <buffer> ]] ]\!]
+
+imap <buffer> <leader>CI $\land\mbox{I}$
+imap <buffer> <leader>CE1 $\land\mbox{E}_1$
+imap <buffer> <leader>CE2 $\land\mbox{E}_2$
+imap <buffer> <leader>DI1 $\lor\mbox{I}_1$
+imap <buffer> <leader>DI2 $\lor\mbox{I}_2$
+imap <buffer> <leader>DE  $\lor\mbox{E}$
+imap <buffer> <leader>II $\Rightarrow\mbox{I}$
+imap <buffer> <leader>IE $\Rightarrow\mbox{E}$
+imap <buffer> <leader>NE $\neg\mbox{E}$
+imap <buffer> <leader>NI $\neg\mbox{I}$
 
 imap <buffer> MCC \mathcal{}<++><Esc>T{i
 
@@ -53,13 +90,7 @@ vnoremap <buffer> `mt <ESC>`>a}<ESC>`<i\mathtt{<ESC>
 
 " put \begin{} \end{} tags tags around the current word
 vnoremap  <C-B>      YpkI\begin{<ESC>A}<ESC>jI\end{<ESC>A}<esc>kA
-nmap <C-M> :call Synctex()<CR>
 
-"setlocal spell spelllang=en_US
+syntax sync minlines=10000
 
 call CompileMainDoc()
-
-" autocmd BufRead *.tex imap  /\         \land
-" autocmd BufRead *.tex imap  \/         \lor
-" autocmd BufRead *.tex imap  ->         \rightarrow
-" autocmd BufRead *.tex imap  ~~         \neg
