@@ -3,9 +3,15 @@ systemctl --user import-environment DISPLAY
 
 # Notification daemon
 dunst &
-#
+
 # Composite manager, for blur and other neat effects
-picom --blur-method dual_kawase --blur-strength 2 --experimental-backends --backend glx &
+picom \
+ --blur-method dual_kawase --blur-strength 2 --backend glx --glx-no-stencil \
+ --fading --fade-in-step 0.05 --fade-out-step 0.1 \
+ --corner-radius 10 --detect-rounded-corners \
+ --rounded-corners-exclude 'class_g = "dwm"' \
+ --rounded-corners-exclude 'window_type = "dock"' \
+ --vsync --daemon
 
 # Fonts
 xset +fp "${XDG_FONTS:-$HOME/.local/share/fonts}"
