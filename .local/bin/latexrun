@@ -252,7 +252,7 @@ class DB:
         # until the process exits.
         lockpath = self.__filename + '.lock'
         if fcntl is not None:
-            lockfd = os.open(lockpath, os.O_CREAT|os.O_WRONLY, 0o666)
+            lockfd = os.open(lockpath, os.O_CREAT|os.O_WRONLY|os.O_CLOEXEC, 0o666)
             # Note that this is actually an fcntl lock, not a lockf
             # lock. Don't be fooled.
             fcntl.lockf(lockfd, fcntl.LOCK_EX, 1)
