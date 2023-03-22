@@ -8,6 +8,17 @@ for submodule in ${SUBMODULES}; do
   FILES=$(printf '%s' "${FILES}" | sed -E "/${SS}/d")
 done
 
+function prompt_mergeskip () {
+    read -p "Merge $1 with local copy? [y/n]" yn
+    case $yn in
+      [Yy]*) vimdiff "${HOME}/$1" "$1";;
+      [Nn]*) return;;
+    esac
+}
+
+NEW_FILES=$((0))
+CHG_FILES=$((0))
+
 function copy() {
   local FILE="${1}"
   echo -ne "missing $FILE\n"
@@ -18,9 +29,19 @@ function copy() {
   esac
 }
 
-for f in ${FILES}; do
-  [ -e "${HOME}/${f}" ] || copy $f
+if [ "$1" = "-c" ]; then
+  for f in ${FILES}; do
+    [ -e "${HOME}/${f}" ] || NEW_FILES=$(($NEW_FILES + 1))
 
-  diff -q "${HOME}/${f}" "${f}" >/dev/null
-  [ $? -ne 0 ] && vimdiff "${HOME}/${f}" "${f}"
-done
+    diff -q -I 'email|name|signingkey' "${HOME}/${f}" "${f}" >/dev/null
+    [ $? -ne 0 ] && CHG_FILES=$(($CHG_FILES + 1))
+  done
+  printf "New files: %d\nFiles changed: %d\n" "${NEW_FILES}" "${CHG_FILES}"
+else
+  for f in ${FILES}; do
+    [ -e "${HOME}/${f}" ] || copy $f
+
+    diff -q -I 'email|name|signingkey' "${HOME}/${f}" "${f}" >/dev/null
+    [ $? -ne 0 ] && prompt_mergeskip "${f}"
+  done
+fi
