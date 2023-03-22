@@ -1,5 +1,14 @@
 #!/usr/bin/env bash
 
+MENU_CMD=dmenu "$@"
+
+if [ "$XDG_SESSION_TYPE" = "wayland" ]; then
+  MENU_CMD=bemenu "$@"
+  TERM=$TERM -d none
+else
+  MENU_CMD=dmenu "$@"
+fi
+
 cachedir=${XDG_CACHE_HOME:-"$HOME/.cache"}
 if [ -d "$cachedir" ]; then
 	cache=$cachedir/dmenu_run_man
@@ -8,8 +17,6 @@ else  # if no xdg dir, fall back to dotfiles in ~
 	cache=$HOME/.dmenu_cache_man
 	historyfile=$HOME/.dmenu_man_history
 fi
-
-FONT="DejaVuSansMono Nerd Font Mono:pixelsize=16:antialias=true:autohint=true:style=book"
 
 # Generate a new cache if necessary
 if stest -dqr -n "$cache" /usr/share/man/**/*; then
@@ -26,7 +33,7 @@ awk -v histfile=$historyfile '
 			x[$0]=1
 		}
 	} !x[$0]++ ' "$cache" \
-	| dmenu "$@" \
+	| $MENU_CMD \
 	| awk -v histfile=$historyfile '
 		BEGIN {
 			FS=OFS="\t"
@@ -53,6 +60,7 @@ awk -v histfile=$historyfile '
 	| while read MAN; do
 		VERSION=$(echo $MAN | sed -Ee 's/.* \(([0-9].*)\)/\1/g')
 		PAGE=$(echo $MAN | sed -Ee 's/(.*) \([0-9].*\)/\1/g')
+		## Uncomment for debugging
 		#echo "Man: $VERSION $PAGE"
-		st -e man $VERSION $PAGE
+		$TERM man $VERSION $PAGE
 	done

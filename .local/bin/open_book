@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/usr/bin/env sh
 
 DOCUMENT=$(find -L ~/${1:-books} -name '*.pdf' \
   | fzf --header 'Choose a pdf')
