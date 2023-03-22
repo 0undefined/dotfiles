@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/usr/bin/env sh
 
 pactl set-default-sink $(pactl list sinks | \
   grep -B 1 "$(pactl list sinks | \
