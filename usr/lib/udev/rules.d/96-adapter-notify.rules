@@ -1,0 +1,2 @@
+# handle change of power source ac/bat, ignore input device batteries
+ACTION=="change", SUBSYSTEM=="power_supply", KERNEL!="hidpp_battery*", RUN+="/usr/local/bin/sigblock -b bat"
