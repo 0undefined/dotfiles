@@ -1,11 +1,14 @@
 runtime! archlinux.vim
 set nocompatible
+
+" encodings
 scriptencoding utf-8
-
-let $MYVIMRC="$XDG_CONFIG_HOME/vim/vimrc"
-
+set fileencoding=utf-8
+set encoding=utf-8
+set fileformats=unix
 
 if !has('nvim')
+  let $MYVIMRC="$XDG_CONFIG_HOME/vim/vimrc"
   " Check if the backup/swap dir exists
   if !isdirectory($XDG_CACHE_HOME . '/vim')
     silent!mkdir -p "$XDG_CACHE_HOME/vim"
@@ -17,44 +20,53 @@ if !has('nvim')
     set viminfo=%,'10,<10,/200,:200,h,n$XDG_CACHE_HOME/vim/.viminfo
   endif
   set runtimepath=$XDG_CONFIG_HOME/vim,$XDG_CONFIG_HOME/vim/after,$VIM,$VIMRUNTIME,$VIM/vimfiles,$VIM/vimfiles/after,$VIM/vimfiles/plugin
-else
-  " Check if the backup/swap dir exists
-  if !isdirectory($XDG_CACHE_HOME . '/nvim')
-    silent!mkdir -p "$XDG_CACHE_HOME/nvim"
-  endif
 
-  " Neovim option so they don't contaminate eachother
-  set directory=$XDG_CACHE_HOME/nvim,/tmp
-  set backupdir=$XDG_CACHE_HOME/nvim,/tmp
-  if has('viminfo')
-    set viminfo=%,'10,<50,/50,:100,h,f0,n$XDG_CACHE_HOME/nvim/.viminfo
-  endif
-  set runtimepath=$XDG_CONFIG_HOME/vim,$XDG_CONFIG_HOME/vim/after,$VIM,$VIMRUNTIME,$VIM/vimfiles,$VIM/vimfiles/after,$VIM/vimfiles/plugin
+  " Fix shift-tab
+  exe 'set t_kB=' . nr2char(27) . '[Z'
+
+  " Everything apparently breaks (in Neovim) if setting background = dark
+  "set bg=dark
+
+  syntax enable
+  filetype plugin indent on
 endif
 
 " behaviour
-set history=200
+set history=1024
 set wildmenu
+
 set ruler
 set cursorline
+
 set showmatch
 set hlsearch
-set backspace=2
 set incsearch
-set formatoptions+=tcroqn2bmj
+
+set backspace=indent,eol,start
+set laststatus=2
+
 set number
-set nowrap
 set splitright
 set conceallevel=2
-set title
+set scrolloff=2
+set display+=truncate
 
-" Fix shift-tab
-exe 'set t_kB=' . nr2char(27) . '[Z'
+"" Format options see :help fo-<CHARACTER> for help on each of the options
+" Autowrap text and comments using `textwidth`, autoinsert comment-leader, and
+" other leaders when wrapping, also with `gq`.
+set formatoptions=tcro/q
+" Recognize numbered lists
+set formatoptions+=n
+" Autowrap lines.
+set formatoptions+=bl1
+" Remove comment leader when joining lines
+set formatoptions+=j
+"
+set formatoptions+=p
 
-" Enable mouse support
-set mouse=a
-
-set clipboard=unnamedplus
+set nowrap
+set textwidth=80
+set colorcolumn=81
 
 " tabs
 set expandtab
@@ -62,34 +74,36 @@ set tabstop=2
 set softtabstop=2
 set shiftwidth=2
 set smartindent
-set textwidth=80
+set smarttab
+
+" Sets terminal title to current filename
+set title
+
+" Search up in every parent dir for a tags file.
+if has('path_extra') && (',' . &g:tags . ',') =~# ',\./tags,'
+  setglobal tags-=./tags tags-=./tags; tags^=./tags;
+endif
+
+" Allow color schemes to do bright colors without forcing bold.
+if &t_Co == 8 && $TERM !~# '^Eterm'
+  set t_Co=16
+endif
+
+" Enable mouse support
+set mouse=a
+
+" Set clipboard to system one
+set clipboard+=unnamedplus
 
 " netrw settings
 let g:netrw_banner=0
 let g:netrw_browse_split=1
 let g:netrw_altv=4
 
-set bg=dark
-
-" theme
-syntax enable
-
 " thematics
-set background=dark
-set colorcolumn=81
 
-" Colorscheme overrides, for transparency
-let g:moonflyTransparent    = 1
-let g:moonflyCursorColor    = 1
-let g:moonflyTerminalColors = 1
-let g:moonflyUndercurls     = 1
-
-let g:jellybeans_overrides = { 'background': {
-\ 'guibg':      'none',
-\ 'ctermbg':    'none',
-\ '256ctermbg': 'none',
-\}}
-let g:jellybeans_use_term_italics = 1
+set listchars=tab:\ \ >,extends:…,precedes:…
+"set list
 
 " Enable termguicolors
 if exists('+termguicolors')
@@ -98,39 +112,51 @@ if exists('+termguicolors')
   set termguicolors
 endif
 
-"colorscheme jellybeans
-colorscheme moonfly
+" Remove trailing cancer on write
+autocmd BufWritePre * %s/\s\+$//e
 
-set listchars=tab:\ \ >,extends:…,precedes:…
-set list
-set tags+=./tags
-set tags+=../tags
+" Move around in insert mode with Alt+{hjkl}
+imap    <A-h> <Left>
+imap    <A-l> <Right>
+imap    <A-k> <Up>
+imap    <A-j> <Down>
 
+" Go to end/start of line, like in the shell
+imap <C-E> <ESC>A
+imap <C-A> <ESC>I
 
-" adding pathogen
-execute pathogen#infect('plugins/{}')
-filetype plugin indent on
+" Search for VISUAL-highlighted text (very brittle)
+vmap     // y/\V<C-R>"<CR>
 
-" encodings
-set fileencoding=utf-8
-set encoding=utf-8
-set fileformats=unix
+" Wrap selection in parenthesis, hard or soft brackets
+vnoremap <leader>( <ESC>`>a)<ESC>`<i(<ESC>
+vnoremap <leader>[ <ESC>`>a]<ESC>`<i[<ESC>
+vnoremap <leader>{ <ESC>`>a}<ESC>`<i{<ESC>
 
-set grepprg=grep\ -nH\ $*
+""" X11 specific stuff, that is also only relevant with vim
+"" Preserve clipboard only relevant if !has('nvim')
+"autocmd VimLeave * call system("xsel -ib", getreg())
+"autocmd VimSuspend * call system("xsel -ib", getreg())
 
-let g:syntastic_always_populate_loc_list = 1
-let g:syntastic_auto_loc_list            = 1
-let g:syntastic_check_on_open            = 1
-let g:syntastic_check_on_wq              = 0
+"" Turn on capslock LED when in insert mode.
+"augroup CapsLockLED
+"  autocmd!
+"  autocmd InsertEnter * :silent !xset  led named 'Caps Lock'
+"  autocmd InsertLeave * :silent !xset -led named 'Caps Lock'
+"  autocmd VimLeave    * :silent !xset -led named 'Caps Lock'
+"augroup END
 
-" filetypes
-let g:syntastic_disabled_filetypes=['asm', 's', 'latex', 'tex', 'javac', 'java']
+"" Plugin settings
+" junegunn/fzf.vim bindings
+noremap <C-f> :Files %:h<cr>
+noremap <C-b> :Buffers<cr>
 
-""" LATEX STUFFS
+" lervag/vimtex
 let g:tex_flavor='latex'
 let g:vimtex_view_method='zathura'
 let g:vimtex_quickfix_mode=0
 let g:tex_conceal='abdmg'
+let g:vimtex_parser_bib_backend = 'bibtex'
 let g:vimtex_compiler_method = 'latexrun'
 let g:vimtex_compiler_latexrun = {
             \ 'backend' : 'jobs',
@@ -145,57 +171,9 @@ let g:vimtex_compiler_latexrun = {
 let g:latex_view_general_viewer = 'zathura'
 let g:vimtex_view_method = 'zathura'
 
-" Remove trailing cancer on write
-autocmd BufWritePre * %s/\s\+$//e
+" tpope/vim-markdown specific settings
+"let g:markdown_fenced_languages = ['c', 'css', 'sh', 'vim', 'futhark']
 
-" Set tmp-file default type to `sh` (used when editing command line)
-autocmd BufNewFile,BufRead /tmp/[a-zA-Z0-9]\+/ setlocal ft=sh
-
-autocmd BufReadPre *.asm !set ft=nasm
-
-let g:markdown_fenced_languages = ['c', 'sh', 'vim']
-
-set makeprg=GCC_COLORS=\ make
-
-vmap     // y/\V<C-R>"<CR>
-vnoremap <leader>( <ESC>`>a)<ESC>`<i(<ESC>
-vnoremap <leader>[ <ESC>`>a]<ESC>`<i[<ESC>
-vnoremap <leader>{ <ESC>`>a}<ESC>`<i{<ESC>
-
-match ErrorMsg '\%>80v.\+'
-match ErrorMsg '\( \|	\)\+$'
-
-map <F5> :make<CR>
-
-map! <ESC>[1;5A <C-Up>
-map! <ESC>[1;5B <C-Down>
-map! <ESC>[1;5C <C-Right>
-map! <ESC>[1;5D <C-Left>
-map  <ESC>[1;5A <C-Up>
-map  <ESC>[1;5B <C-Down>
-map  <ESC>[1;5C <C-Right>
-map  <ESC>[1;5D <C-Left>
-
-map <ScrollWheelUp> <C-Y>
-"map <ScrollWheelDown> <C-E>
-
-imap <C-E> <ESC>A
-imap <C-A> <ESC>I
-
-" Fuzzy Wuzzy bindings
-noremap <C-f> :Files<cr>
-noremap <C-b> :Buffers<cr>
-
-" Preserve clipboard
-autocmd VimLeave * call system("xsel -ib", getreg())
-autocmd VimSuspend * call system("xsel -ib", getreg())
-
-"augroup CapsLockLED
-"  autocmd!
-"  autocmd InsertEnter * :silent !xset  led named 'Caps Lock'
-"  autocmd InsertLeave * :silent !xset -led named 'Caps Lock'
-"  autocmd VimLeave    * :silent !xset -led named 'Caps Lock'
-"augroup END
 
 "if has("autocmd")
 "  augroup templates
@@ -203,7 +181,6 @@ autocmd VimSuspend * call system("xsel -ib", getreg())
 "    autocmd BufNewFile *.h "s/<++DEF++>/" toupper(expand('%:t:r') . "_" . expand('%:e')))
 "  augroup END
 "endif
-
 
 " Change cursor to block
 "   1 -> solid underscore
@@ -218,8 +195,6 @@ autocmd VimSuspend * call system("xsel -ib", getreg())
 "autocmd InsertEnter * silent execute "!echo -ne '\e[6 q'"
 "autocmd InsertLeave * silent execute "!echo -ne '\e[2 q'"
 
-
-
 " "Start Insert-mode" line
 let &t_SI = "\e[6 q"
 " "Start Replace-mode" underscore
@@ -227,9 +202,9 @@ let &t_SR = "\e[4 q"
 " "End Insert-mode" block
 let &t_EI = "\e[2 q"
 
-autocmd VimResume * silent execute "!echo -e '\e[2 q'"
+"autocmd VimResume * silent execute "!echo -e '\e[2 q'"
 
-" Undercurls/spelling
+"" Undercurls/spelling
 let &t_Cs = "\e[4:3m"
 let &t_Ce = "\e[4:0m"
 
@@ -237,3 +212,41 @@ if !has('nvim')
   highlight SpellBad   guisp=red    gui=undercurl guifg=NONE guibg=NONE ctermfg=NONE ctermbg=NONE term=underline cterm=undercurl ctermul=red
   highlight SpellCap   guisp=yellow gui=undercurl guifg=NONE guibg=NONE ctermfg=NONE ctermbg=NONE term=underline cterm=undercurl ctermul=yellow
 endif
+
+if has('nvim')
+  call plug#begin()
+  Plug 'neovim/nvim-lspconfig'
+
+  " deps for haskell-tools.nvim
+  Plug 'nvim-lua/plenary.nvim'
+  Plug 'mfussenegger/nvim-dap'
+  Plug 'phoityne/haskell-debug-adapter'
+  Plug 'nvim-telescope/telescope.nvim', { 'tag': '0.1.1' }
+  Plug 'nvim-treesitter/nvim-treesitter'
+
+  " For Haskell LSP (hls)
+  Plug 'mrcjkb/haskell-tools.nvim'
+
+  Plug 'neovimhaskell/haskell-vim'
+
+  " Fuzzy Wuzzy Finding
+  Plug 'junegunn/fzf.vim'
+
+  " VimTex
+  Plug 'lervag/vimtex'
+
+  Plug 'tpope/vim-markdown'
+
+  "" Colorschemes
+  "Plug 'bluz71/vim-moonfly-colors', { 'as': 'moonfly' }
+  "Plug 'pineapplegiant/spaceduck', { 'branch': 'main' }
+  Plug 'ghifarit53/tokyonight-vim'
+  "Plug 'folke/tokyonight.nvim'
+  Plug 'oxfist/night-owl.nvim'
+
+  Plug '0undefined/futhark.vim'
+
+  call plug#end()
+endif
+
+colorscheme tokyonight
