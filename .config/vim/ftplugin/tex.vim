@@ -24,9 +24,15 @@ function! CompileMainDoc()
   execute(l:latexcmd . GetMainDoc())
 endfunction
 
+"function! Synctex()
+"  " remove 'silent' for debugging
+"  let l:doc = GetMainDoc()
+"  execute "silent !mv -u latex.out/" . substitute(l:doc, '\.tex', '') . ".synctex.gz ."
+"  execute "silent !zathura --synctex-forward " . line('.') . ":" . col('.') . ":" . bufname('%') . " " . expand('%:t:r') . ".pdf"
+"  redraw!
+"endfunction
 function! Synctex()
   " remove 'silent' for debugging
-  execute "silent !mv -u latex.out/" . substitute(l:doc, '\.tex', '') . ".synctex.gz ."
   execute "silent !zathura --synctex-forward " . line('.') . ":" . col('.') . ":" . bufname('%') . " " . g:syncpdf
   redraw!
 endfunction
@@ -59,8 +65,8 @@ imap <buffer> \|- \vdash
 imap <buffer> \|= \vDash
 imap <buffer> !-- \inference[]{%<CR>}{%<CR>}<ESC>kk$F[a
 imap <buffer> !== \begin{align*}<CR>\end{align*}<ESC>O
-imap <buffer> !ii \begin{itemize}<CR>\end{itemize}<ESC>O\item Case<ESC>
-imap <buffer> CC \item Case
+imap <buffer> !ii \begin{itemize}<CR>\end{itemize}<ESC>O\item Case 
+imap <buffer> CC \item Case 
 imap <buffer> EIMP \expEimp{<++>}{<++>}{<++>}<ESC>F\<C-j>
 imap <buffer> [[ [\![
 imap <buffer> ]] ]\!]
@@ -92,5 +98,11 @@ vnoremap <buffer> `mt <ESC>`>a}<ESC>`<i\mathtt{<ESC>
 vnoremap  <C-B>      YpkI\begin{<ESC>A}<ESC>jI\end{<ESC>A}<esc>kA
 
 syntax sync minlines=10000
+"setlocal spell spelllang=en_US
 
 call CompileMainDoc()
+
+" autocmd BufRead *.tex imap  /\         \land
+" autocmd BufRead *.tex imap  \/         \lor
+" autocmd BufRead *.tex imap  ->         \rightarrow
+" autocmd BufRead *.tex imap  ~~         \neg
