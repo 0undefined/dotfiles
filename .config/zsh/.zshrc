@@ -28,6 +28,11 @@ DISABLE_AUTO_UPDATE="true"
 # Uncomment the following line if pasting URLs and other text is messed up.
 DISABLE_MAGIC_FUNCTIONS=true
 
+# Uncomment the following line to disable auto-setting terminal title.
+#DISABLE_AUTO_TITLE="true"
+unset DISABLE_AUTO_TITLE
+
+
 HIST_STAMPS="yyyy-mm-dd"
 
 plugins=()
@@ -77,25 +82,20 @@ echo -ne '\e[5 q' # Use beam shape cursor on startup.
 # Allow editing command line in editor
 autoload -Uz edit-command-line
 zle -N edit-command-line
-
-# Bind it to space
 bindkey -M vicmd ' ' edit-command-line
 
-# Bind ^A and ^E in visual mode
-bindkey -M vicmd '^e' vi-end-of-line
-bindkey -M vicmd '^a' beginning-of-line
-
-# Regular bindings
-bindkey "^e" vi-end-of-line
+bindkey "^e" end-of-line
 bindkey "^a" beginning-of-line
-
-# Reverse search
+bindkey -M vicmd "^e" end-of-line
+bindkey -M vicmd "^a" beginning-of-line
 bindkey "^r" history-incremental-search-backward
 
 bindkey "${terminfo[khome]}" beginning-of-line
 bindkey "${terminfo[kend]}"  end-of-line
+bindkey "${terminfo[kdch1]}" delete-char
+bindkey "^[[1;5C"            forward-word
+bindkey "^[[1;5D"            backward-word
 
-# Load searching upwards with beginning of the line
 autoload -U up-line-or-beginning-search
 autoload -U down-line-or-beginning-search
 zle -N      up-line-or-beginning-search
@@ -142,7 +142,7 @@ function timeuntil() {
   if ! [[ "${1}" =~ "[0-9]{4}-[0-9]{1,2}-[0-9]{1,2} [0-9]{2}:[0-9]{2}" ]]; then
     echo "argument must be of the form \"YYYY-MM-DD hh:mm\""
   else
-    local TDIFF=$(($(date -d "${1}" +%s) - $(date +%s) - 24 * 60 * 60))
+    local TDIFF=$(( $(date -d "${1}" +%s) - $(date +%s) ))
     if [ $(($TDIFF)) -lt 0 ]; then
       echo 'YEEHAW'
     else
@@ -176,6 +176,7 @@ alias fsharpi='fsharpi --nologo'
 alias gdb='gdb -q -x ${XDG_CONFIG_HOME:-$HOME/.config}/gdbinit'
 alias glog2="git log --graph --abbrev-commit --decorate --format=format:'%Cgreen%h%C(reset) [%G?] %C(white)%s%C(reset) %C(dim white)- %an%C(reset)%Cred%d%C(reset)' --all"
 alias glog='git log --pretty="%Cgreen%H%Creset [%G?] %cn: %s %Cred%d%Creset"'
+alias githist='git log --pretty="%Cgreen%H%Creset [%G?] %cn: %s %Cred%d%Creset" --color=always | fzf --ansi --reverse --preview="git show -w --color=always {1}"'
 alias irssi="irssi --home=${XDG_DATA_HOME:-$HOME/.config/irssi}"
 alias ip='ip -c'
 alias ls='lsd'
@@ -186,7 +187,7 @@ alias pbcopy='xclip -selection clipboard -i'
 alias pbpaste='xclip -selection clipboard -o'
 alias s='vim $(fzf)'
 alias scan='nmcli d wifi rescan'
-alias screen='TERM=st-256color screen -T screen-256color -s zsh'
+alias screen="screen -T screen-256color -s zsh"
 alias sudo='doas'
 alias ptop="ps -o pid,user,size,pcpu,command --sort size cx"
 alias vbox='virtualbox'
@@ -194,6 +195,7 @@ if ! [ "$XDG_SESSION_TYPE" = "wayland" ]; then
   alias v='vim --servername vim'
 else
   alias vim=nvim
+  alias vimdiff='nvim -d'
   alias v='nvim'
 fi
 
@@ -232,4 +234,5 @@ fi
 # Use screen if in a ssh session
 [ -n "$SSH_CLIENT" ] && ! [[ "$TERM" =~ ^screen.*$ ]] && screen -R && exit 0
 
+# Avoid returning anything other than 0, in case the above condition evaluates to false.
 true
