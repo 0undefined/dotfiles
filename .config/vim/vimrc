@@ -48,7 +48,8 @@ set laststatus=2
 set number
 set splitright
 set conceallevel=2
-set scrolloff=2
+set scrolloff=0
+set sidescrolloff=1
 set display+=truncate
 
 "" Format options see :help fo-<CHARACTER> for help on each of the options
@@ -103,7 +104,7 @@ let g:netrw_altv=4
 " thematics
 
 set listchars=tab:\ \ >,extends:…,precedes:…
-"set list
+set list
 
 " Enable termguicolors
 if exists('+termguicolors')
