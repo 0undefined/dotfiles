@@ -7,6 +7,10 @@ set fileencoding=utf-8
 set encoding=utf-8
 set fileformats=unix
 
+" Avoid infinite screen recursion
+unlet $SSH_CLIENT
+
+" Set sane defaults, if not using neovim already
 if !has('nvim')
   let $MYVIMRC="$XDG_CONFIG_HOME/vim/vimrc"
   " Check if the backup/swap dir exists
@@ -117,10 +121,15 @@ endif
 autocmd BufWritePre * %s/\s\+$//e
 
 " Move around in insert mode with Alt+{hjkl}
-imap    <A-h> <Left>
-imap    <A-l> <Right>
-imap    <A-k> <Up>
-imap    <A-j> <Down>
+inoremap    <A-h> <Left>
+inoremap    <A-l> <Right>
+inoremap    <A-k> <Up>
+inoremap    <A-j> <Down>
+
+nnoremap <A-h> <C-w>h
+nnoremap <A-j> <C-w>j
+nnoremap <A-k> <C-w>k
+nnoremap <A-l> <C-w>l
 
 " Go to end/start of line, like in the shell
 imap <C-E> <ESC>A
@@ -149,7 +158,7 @@ vnoremap <leader>{ <ESC>`>a}<ESC>`<i{<ESC>
 
 "" Plugin settings
 " junegunn/fzf.vim bindings
-noremap <C-f> :Files %:h<cr>
+noremap <C-f> :Files<cr>
 noremap <C-b> :Buffers<cr>
 
 " lervag/vimtex
@@ -250,4 +259,4 @@ if has('nvim')
   call plug#end()
 endif
 
-colorscheme tokyonight
+colorscheme night-owl

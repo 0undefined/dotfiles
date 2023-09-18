@@ -29,5 +29,17 @@ vim.api.nvim_create_autocmd('LspAttach', {
     vim.keymap.set('n', 'K',  vim.lsp.buf.hover, opts)
     vim.keymap.set('n', 'gD', vim.lsp.buf.declaration, opts)
     vim.keymap.set('n', 'gd', vim.lsp.buf.definition, opts)
+    vim.keymap.set('n', 'gr', vim.lsp.buf.references, opts)
   end,
 })
+
+vim.keymap.set('t', '<A-h>', "<C-\\><C-N><C-w>h", nil)
+vim.keymap.set('t', '<A-j>', "<C-\\><C-N><C-w>j", nil)
+vim.keymap.set('t', '<A-k>', "<C-\\><C-N><C-w>k", nil)
+vim.keymap.set('t', '<A-l>', "<C-\\><C-N><C-w>l", nil)
+
+local ts = require('telescope.builtin')
+vim.keymap.set('n', '<leader>ff', ts.find_files, {})
+vim.keymap.set('n', '<leader>gg', ts.live_grep, {})
+vim.keymap.set('n', '<leader>gf', ts.git_files, {})
+vim.keymap.set('n', '<leader>b', ts.buffers, {})
