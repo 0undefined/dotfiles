@@ -120,6 +120,7 @@ endif
 " Remove trailing cancer on write
 autocmd BufWritePre * %s/\s\+$//e
 
+let mapleader=","
 " Move around in insert mode with Alt+{hjkl}
 inoremap    <A-h> <Left>
 inoremap    <A-l> <Right>
@@ -158,8 +159,8 @@ vnoremap <leader>{ <ESC>`>a}<ESC>`<i{<ESC>
 
 "" Plugin settings
 " junegunn/fzf.vim bindings
-noremap <C-f> :Files<cr>
-noremap <C-b> :Buffers<cr>
+"noremap <C-f> :Files<cr>
+"noremap <C-b> :Buffers<cr>
 
 " lervag/vimtex
 let g:tex_flavor='latex'
