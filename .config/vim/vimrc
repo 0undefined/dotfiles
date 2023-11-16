@@ -23,17 +23,18 @@ if !has('nvim')
   if has('viminfo')
     set viminfo=%,'10,<10,/200,:200,h,n$XDG_CACHE_HOME/vim/.viminfo
   endif
-  set runtimepath=$XDG_CONFIG_HOME/vim,$XDG_CONFIG_HOME/vim/after,$VIM,$VIMRUNTIME,$VIM/vimfiles,$VIM/vimfiles/after,$VIM/vimfiles/plugin
 
   " Fix shift-tab
   exe 'set t_kB=' . nr2char(27) . '[Z'
 
   " Everything apparently breaks (in Neovim) if setting background = dark
-  "set bg=dark
+  set bg=dark
 
   syntax enable
   filetype plugin indent on
 endif
+
+set runtimepath=$XDG_CONFIG_HOME/vim,$XDG_CONFIG_HOME/vim/after,$VIM,$VIMRUNTIME,$VIM/vimfiles,$VIM/vimfiles/after,$VIM/vimfiles/plugin
 
 " behaviour
 set history=1024
@@ -136,6 +137,9 @@ nnoremap <A-l> <C-w>l
 imap <C-E> <ESC>A
 imap <C-A> <ESC>I
 
+cmap <C-A> <Home>
+cmap <C-E> <End>
+
 " Search for VISUAL-highlighted text (very brittle)
 vmap     // y/\V<C-R>"<CR>
 
@@ -159,8 +163,12 @@ vnoremap <leader>{ <ESC>`>a}<ESC>`<i{<ESC>
 
 "" Plugin settings
 " junegunn/fzf.vim bindings
-"noremap <C-f> :Files<cr>
-"noremap <C-b> :Buffers<cr>
+noremap <C-f> :Files<cr>
+noremap <C-b> :Buffers<cr>
+
+"" Alternatively use telescope (if on neovim)
+"noremap <C-f> :Telescope find_files<cr>
+"noremap <C-f> :Telescope buffers<cr>
 
 " lervag/vimtex
 let g:tex_flavor='latex'
@@ -183,7 +191,7 @@ let g:latex_view_general_viewer = 'zathura'
 let g:vimtex_view_method = 'zathura'
 
 " tpope/vim-markdown specific settings
-"let g:markdown_fenced_languages = ['c', 'css', 'sh', 'vim', 'futhark']
+let g:markdown_fenced_languages = ['c', 'css', 'sh', 'vim', 'futhark', 'haskell']
 
 
 "if has("autocmd")
@@ -260,4 +268,18 @@ if has('nvim')
   call plug#end()
 endif
 
-colorscheme night-owl
+"autocmd FileType markdown
+"    \ set formatoptions-=q |
+"    \ set formatlistpat=^\\s*\\d\\+\\.\\s\\+\\\|^\\s*\[-*+]\\s\\+
+
+autocmd FileType markdown set comments-=mb:*
+autocmd FileType markdown set comments-=mb:+
+autocmd FileType markdown set comments-=mb:-
+autocmd FileType markdown set formatlistpat=^\\s*\\d\\+\\.\\s\\+\\\|^\\s*\[-*+]\\s\\+
+
+
+if has('nvim')
+  colorscheme night-owl
+else
+  colorscheme tokyonight
+endif
