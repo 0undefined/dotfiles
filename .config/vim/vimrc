@@ -39,6 +39,7 @@ set runtimepath=$XDG_CONFIG_HOME/vim,$XDG_CONFIG_HOME/vim/after,$VIM,$VIMRUNTIME
 " behaviour
 set history=1024
 set wildmenu
+set noautoread
 
 set ruler
 set cursorline
@@ -64,7 +65,7 @@ set formatoptions=tcro/q
 " Recognize numbered lists
 set formatoptions+=n
 " Autowrap lines.
-set formatoptions+=bl1
+set formatoptions+=b1
 " Remove comment leader when joining lines
 set formatoptions+=j
 "
@@ -191,7 +192,7 @@ let g:latex_view_general_viewer = 'zathura'
 let g:vimtex_view_method = 'zathura'
 
 " tpope/vim-markdown specific settings
-let g:markdown_fenced_languages = ['c', 'css', 'sh', 'vim', 'futhark', 'haskell']
+let g:markdown_fenced_languages = ['c', 'css', 'sh', 'vim', 'futhark', 'haskell', 'tex', 'latex']
 
 
 "if has("autocmd")
@@ -232,15 +233,15 @@ if !has('nvim')
   highlight SpellCap   guisp=yellow gui=undercurl guifg=NONE guibg=NONE ctermfg=NONE ctermbg=NONE term=underline cterm=undercurl ctermul=yellow
 endif
 
+call plug#begin()
 if has('nvim')
-  call plug#begin()
   Plug 'neovim/nvim-lspconfig'
 
   " deps for haskell-tools.nvim
   Plug 'nvim-lua/plenary.nvim'
   Plug 'mfussenegger/nvim-dap'
   Plug 'phoityne/haskell-debug-adapter'
-  Plug 'nvim-telescope/telescope.nvim', { 'tag': '0.1.1' }
+  Plug 'nvim-telescope/telescope.nvim', { 'tag': '0.1.4' }
   Plug 'nvim-treesitter/nvim-treesitter'
 
   " For Haskell LSP (hls)
@@ -257,16 +258,30 @@ if has('nvim')
   Plug 'tpope/vim-markdown'
 
   "" Colorschemes
-  "Plug 'bluz71/vim-moonfly-colors', { 'as': 'moonfly' }
-  "Plug 'pineapplegiant/spaceduck', { 'branch': 'main' }
+  Plug 'bluz71/vim-moonfly-colors', { 'as': 'moonfly' }
+  Plug 'pineapplegiant/spaceduck', { 'branch': 'main' }
   Plug 'ghifarit53/tokyonight-vim'
-  "Plug 'folke/tokyonight.nvim'
   Plug 'oxfist/night-owl.nvim'
 
   Plug '0undefined/futhark.vim'
+else
+  Plug 'junegunn/fzf.vim'
 
-  call plug#end()
+  " VimTex
+  Plug 'lervag/vimtex'
+
+  Plug 'tpope/vim-markdown'
+
+  "" Colorschemes
+  Plug 'bluz71/vim-moonfly-colors', { 'as': 'moonfly' }
+  Plug 'pineapplegiant/spaceduck', { 'branch': 'main' }
+  Plug 'ghifarit53/tokyonight-vim'
+
+  Plug 'andreasvc/vim-256noir.git'
+
+  Plug '0undefined/futhark.vim'
 endif
+call plug#end()
 
 "autocmd FileType markdown
 "    \ set formatoptions-=q |

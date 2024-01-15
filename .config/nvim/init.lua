@@ -13,9 +13,12 @@ vim.cmd {cmd='source', args={vimrcpath}}
 -- Lsp servers
 local lspconfig = require('lspconfig')
 lspconfig.clangd.setup {filetypes = {'c', 'cc', 'cpp', 'h', 'hpp', 'cxx'}}
-lspconfig.futhark_lsp.setup {}
-lspconfig.rust_analyzer.setup {}
-
+--lspconfig.futhark_lsp.setup {}
+----lspconfig.rust_analyzer.setup {}
+--local def_opts = { noremap = true, silent = true, }
+--lspconfig.hls.setup{
+--  filetypes = { 'haskell', 'lhaskell', 'cabal' },
+--}
 -- Lsp options
 vim.api.nvim_create_autocmd('LspAttach', {
   group = vim.api.nvim_create_augroup('UserLspConfig', {}),
@@ -43,3 +46,5 @@ vim.keymap.set('n', '<leader>ff', ts.find_files, {})
 vim.keymap.set('n', '<leader>gg', ts.live_grep, {})
 vim.keymap.set('n', '<leader>gf', ts.git_files, {})
 vim.keymap.set('n', '<leader>b', function() ts.buffers({ ignore_curret_buffer = true, sort_lastused = true }) end, {})
+
+vim.keymap.set('n', '<leader>?', "<cmd>!hlint %<cr>", {})
