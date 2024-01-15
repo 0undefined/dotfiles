@@ -209,5 +209,5 @@ tab[selected="true"] .tab-background {
 }
 
 .tabbrowser-tab .tab-label  { color: var(--fg) !important; }
-.tabbrowser-tab .tab-label[selected="true"]  { color: var(--bg) !important; }
+.tabbrowser-tab[selected="true"] .tab-label  { color: var(--bg) !important; }
 .tab-close-button { fill: var(--fg) !important }
