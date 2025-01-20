@@ -1,0 +1,24 @@
+#!/usr/bin/env sh
+set -e
+
+export XDG_SESSION_TYPE='wayland'
+export XDG_CURRENT_DESKTOP=dwl
+
+export DWL_LOGFILE="${XDG_CACHE_HOME:-$HOME/.cache}/dwl-test.log"
+
+export MOZ_ENABLE_WAYLAND=1
+#export LIBVA_DRIVER_NAME=i965
+export LIBVA_DRIVER_NAME=iHD
+#export MOZ_DRM_DEVICE=card0
+export TERM=foot
+export EDITOR=nvim
+
+export BEMENU_OPTS='--fn "Monospace 12" --hp 24 -H 24'
+
+# Use QT backend for matplotlib
+export MPLBACKEND=qtagg
+
+~/gits/status/status | exec ~/repositories/w-env/dwl/dwl -u $(id -u)
+#status | exec ~/repositories/w-env/dwl/dwl -u $(id -u)
+
+#exec dwl -u $(id -u) |& tee $DWL_LOGFILE
