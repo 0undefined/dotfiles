@@ -31,184 +31,58 @@
   --secondary-tab-color:    var(--red);
   --secondary-tab-text-color: var(--fg);
   --url-bg:                 var(--black);
+
+  /* override colors */
+  
+  --tab-selected-bgcolor: var(--accent-color) !important;
+  --tab-selected-outline-color: var(--secondary-accent-color) !important;
+
+  --toolbar-field-background-color: var(--bg) !important;
+  --toolbar-bgcolor: var(--black) !important;
+  --toolbar-color: var(--fg) !important;
+  --toolbarbutton-outer-padding: 0 0 !important;
+  
+  --toolbox-bgcolor: var(--black) !important;
+  --toolbox-bgcolor-inactive: var(--black) !important;
+  
+  --inactive-titlebar-opacity: 0.5 !important;
 }
 
-#TabsToolbar >  .titlebar-buttonbox-container {
-  visibility: collapse !important;
-}
+#tabbrowser-tabs[haspinnedtabs]:not([positionpinnedtabs])[orient="horizontal"] > #tabbrowser-arrowscrollbox > .tabbrowser-tab:nth-child(1 of :not([pinned], [hidden])) {
+  margin-inline-start: unset !important;
+}}
 
-:root {
-  --navbarWidth:  40vw;
-  --animationSpeed: 0.5s;
-}
-
-#TabsToolbar {
-  margin-left : var(--navbarWidth) !important;
-}
-
+/* hide tabs when not in focus */
 #nav-bar {
-  margin-right: calc(100vw - var(--navbarWidth)) !important;
-  background-color:var(--red);
+  :root[tabsintitlebar] &, :root[tabsintitlebar] & #urlbar:popover-open {
+    &:-moz-window-inactive {
+      display: none;
+    }
+  }
 }
 
 #urlbar-container {
-  min-width   : 0px !important;
-  background-color: var(--bg) !important;
+  margin-inline: 0px !important;;
 }
 
-:root[uidensity="compact"] #nav-bar {
-  margin-top  : -37px !important;
-  height      : 37px !important;
+/*
+.browser-toolbar {
+  background-color: var(--black);
 }
-
-:root:not([uidensity="compact"]):not([uidensity="touch"]) #nav-bar {
-  margin-top  : -44px !important;
-  height      : 44px !important;
-}
-
-:root[uidensity="touch"] #nav-bar {
-  margin-top  : -49px !important;
-  height      : 49px !important;
-}
-
-/* URL dropdown*/
-.urlbarView-title {
-  color: var(--white) !important;
-}
-.urlbarView {
-  background-color: var(--bg) !important;
-}
-.urlbarView-url {
-  color: var(--fg) !important;
-}
-
-/* //URL dropdown*/
-
-/* Back Hide */
-#back-button[disabled="true"] { display: none !important }
-
-/* Forward Hide */
-#forward-button[disabled="true"] { display: none !important }
-
-/* Site information button */
-#identity-box { display: none !important }
-
-/* "Shield" icon */
-#tracking-protection-icon-container { display: none !important }
-
-#nav-bar {
-  background  : var(--bg) !important;
-  box-shadow  : none !important;
-}
-
-#navigator-toolbox {
-  border      : none !important;
-}
-
-.titlebar-spacer {
-  display     : none !important;
-}
-
 #urlbar-background {
-  border      : var(--bg) !important;
+  background-color: var(--bg);
 }
+*/
 
-#urlbar:not(:hover):not([breakout][breakout-extend]) > #urlbar-background {
-  box-shadow  : none !important;
-  background  : var(--black) !important;
+/* nav bar */
+#back-button,
+#forward-button,
+#unified-extensions-button,
+/* tabs */
+.tab-close-button,
+#tabbrowser-arrowscrollbox-periphery,
+.titlebar-spacer,
+.titlebar-spacer[type="pre-tabs"], .titlebar-spacer[type="post-tabs"],
+.titlebar-buttonbox-container {
+  display: none !important;
 }
-
-
-/* Element Hiding stuff */
-
-.urlbar-icon, #userContext-indicator, #userContext-label {
-  fill        : transparent !important;
-  background  : transparent !important;
-  color       : transparent !important;
-}
-
-#urlbar:hover .urlbar-icon,
-#urlbar:active .urlbar-icon,
-#urlbar[focused] .urlbar-icon {
-  fill        : var(--yellow) !important;
-}
-
-/*================== TABS BAR ==================*/
-
-#titlebar #TabsToolbar {
-  background: var(--bg) !important;
-}
-
-
-#PersonalToolbar {
-  background: var(--black) !important;
-  color: var(--black-light) !important;
-  padding-bottom: 6px !important;
-  padding-top: 1px !important;
-}
-
-toolbar#nav-bar {
-  background: var(--bg) !important;
-  box-shadow: none !important;
-  padding-bottom: 4px !important;
-}
-
-/*================ DARK THEME ================*/
-:root:-moz-lwtheme-brighttext,
-.sidebar-panel[lwt-sidebar-brighttext],
-body[lwt-sidebar-brighttext] {
-	--main-bgcolor: var(--bg);
-	--transparent-bgcolor: var(--bg);
-}
-
-tab[selected="true"] .tab-content {
-  color: var(--secondary-accent-color) !important;
-}
-
-tab[selected="true"] .tab-background {
-  background: var(--accent-color) !important;
-}
-
-.tabbrowser-tab>.tab-stack>.tab-background:not([selected="true"]) {
-  transition: all 0.3s ease !important;
-}
-
-.tabbrowser-tab:hover>.tab-stack>.tab-background:not([selected="true"]) {
-  background-color: var(--bg) !important;
-}
-
-.tab-line {
-  height: 0px !important;
-}
-
-.tabbrowser-tab {
-  margin-right: 5px !important;
-}
-
-.tabbrowser-tab:not([visuallyselected="true"]),
-.tabbrowser-tab:-moz-lwtheme {
-  color: rgba(var(--red), 1) !important;
-}
-
-tab[selected="true"] .tab-content {
-  color: var(--accent-color) !important;
-}
-
-tab[selected="true"] .tab-background {
-  background: var(--accent-color) !important;
-}
-
-.tabbrowser-tab::after,
-.tabbrowser-tab::before {
-  border-left: 0 !important;
-  opacity: 0 !important;
-}
-
-.tab-close-button {
-  transition: all 0.3s ease !important;
-  border-radius: 4px !important;
-}
-
-.tabbrowser-tab .tab-label  { color: var(--fg) !important; }
-.tabbrowser-tab[selected="true"] .tab-label  { color: var(--bg) !important; }
-.tab-close-button { fill: var(--fg) !important }
