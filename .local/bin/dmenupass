@@ -1,0 +1,42 @@
+#!/usr/bin/sh
+
+getpswds() {
+  RET=$(pass ls | sed -E '/^[A-Z]/d;s/[└├](─)* //g;s/(\[0+m)//g' | fzf)
+  [ -z "${RET}" ] && exit 0
+  echo -en "${RET}"
+}
+
+show() {
+  PSWD=$1
+  [ -z "$PSWD" ] && PSWD=$(getpswds)
+  # Necessary in order to allow pasting and not immediately closing the thing
+  pass show -c "$PSWD"
+  notify-send -t 5000 "Pass" "Copied $PSWD to clipboard"
+  sleep 30
+}
+
+add() {
+  clear
+  echo -n "Name for new password: "
+  read PSWDNAME
+  [ -z "${PSWDNAME}" ] && exit 0
+  pass insert "${PSWDNAME}"
+}
+
+options() {
+  RET=$(echo -e "ls\nshow\ninsert\nadd" | sort | fzf)
+  [ -z "${RET}" ] && exit 0
+  echo -en "${RET}"
+}
+
+CMD="${1}"
+
+[ -z "${CMD}" ] && CMD=$(options)
+
+
+case "${CMD}" in
+  ls) getpswds >/dev/null;;
+  show) show;;
+  insert) add;;
+  add) add;;
+esac
