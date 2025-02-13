@@ -168,6 +168,7 @@ tab[selected="true"] .tab-content {
 tab[selected="true"] .tab-background {
   background: var(--accent-color) !important;
 }
+
 .tabbrowser-tab>.tab-stack>.tab-background:not([selected="true"]) {
   transition: all 0.3s ease !important;
 }

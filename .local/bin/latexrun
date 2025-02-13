@@ -252,7 +252,7 @@ class DB:
         # until the process exits.
         lockpath = self.__filename + '.lock'
         if fcntl is not None:
-            lockfd = os.open(lockpath, os.O_CREAT|os.O_WRONLY|os.O_CLOEXEC, 0o666)
+            lockfd = os.open(lockpath, os.O_CREAT|os.O_WRONLY, 0o666)
             # Note that this is actually an fcntl lock, not a lockf
             # lock. Don't be fooled.
             fcntl.lockf(lockfd, fcntl.LOCK_EX, 1)
@@ -1211,9 +1211,9 @@ class LaTeXFilter:
                 return self.__runaway()
             if lookingatre(r'(Overfull|Underfull|Loose|Tight) \\[hv]box \('):
                 return self.__bad_box()
-            if lookingatre('(Package |Class |LaTeX |pdfTeX )?(\w+ )?warning: ', re.I):
+            if lookingatre(r'(Package |Class |LaTeX |pdfTeX )?(\w+ )?warning: ', re.I):
                 return self.__generic_warning()
-            if lookingatre('No file .*\\.tex\\.$', re.M):
+            if lookingatre(r'No file .*\\.tex\\.$', re.M):
                 # This happens with \includes of missing files.  For
                 # whatever reason, LaTeX doesn't consider this even
                 # worth a warning, but I do!
@@ -1350,7 +1350,7 @@ class LaTeXFilter:
         stack = []
         while self.__avail:
             m1 = self.__lookingatre(r'<([a-z ]+|\*|read [^ >]*)> |\\.*(->|...)')
-            m2 = self.__lookingatre('l\.[0-9]+ ')
+            m2 = self.__lookingatre(r'l\.[0-9]+ ')
             if m1:
                 found_context = True
                 pre = self.__consume_line().rstrip('\n')
@@ -1771,7 +1771,7 @@ class BibTeXFilter:
         # bib_err_print/bib_err/
         # bib_warn_print/bib_warn/
         # bib_one_of_two_expected_err/macro_name_warning/
-        if match('(.*?)---?line ([0-9]+) of file (.*)'):
+        if match(r'(.*?)---?line ([0-9]+) of file (.*)'):
             # Sometimes the real error is printed on the previous line
             if m.group(1) == 'while executing':
                 # bst_ex_warn.  The real message is on the previous line
@@ -1782,22 +1782,22 @@ class BibTeXFilter:
             return (typ, m.group(3), int(m.group(2)), msg)
 
         # overflow/print_overflow
-        if match('Sorry---you\'ve exceeded BibTeX\'s (.*)'):
+        if match(r'Sorry---you\'ve exceeded BibTeX\'s (.*)'):
             return ('error', None, None, 'capacity exceeded: ' + m.group(1))
         # confusion/print_confusion
-        if match('(.*)---this can\'t happen$'):
+        if match(r'(.*)---this can\'t happen$'):
             return ('error', None, None, 'internal error: ' + m.group(1))
         # aux_end_err
-        if match('I found (no .*)---while reading file (.*)'):
+        if match(r'I found (no .*)---while reading file (.*)'):
             return ('error', m.group(2), None, m.group(1))
         # bad_cross_reference_print/
         # nonexistent_cross_reference_error/
         # @<Complain about a nested cross reference@>
         #
         # This is split across two lines.  Match the second.
-        if match('^refers to entry "'):
+        if match(r'^refers to entry "'):
             typ, msg = self.__canonicalize(prev_line + ' ' + line)
-            msg = re.sub('^a (bad cross reference)', '\\1', msg)
+            msg = re.sub(r'^a (bad cross reference)', '\\1', msg)
             # Try to give this key a location
             filename = lineno = None
             m2 = re.search(r'--entry "[^"]"', prev_line)
@@ -1805,11 +1805,11 @@ class BibTeXFilter:
                 filename, lineno = self.__find_key(m2.group(1))
             return (typ, filename, lineno, msg)
         # print_missing_entry
-        if match('Warning--I didn\'t find a database entry for (".*")'):
+        if match(r'Warning--I didn\'t find a database entry for (".*")'):
             return ('warning', None, None,
                     'no database entry for ' + m.group(1))
         # x_warning
-        if match('Warning--(.*)'):
+        if match(r'Warning--(.*)'):
             # Most formats give warnings about "something in <key>".
             # Try to match it up.
             filename = lineno = None
@@ -1826,13 +1826,13 @@ class BibTeXFilter:
         # biber type errors
         if match('^.*> WARN - (.*)$'):
             print ('warning', None, None, m.group(1))
-            m2 = re.match("(.*) in file '(.*?)', skipping ...", m.group(1))
+            m2 = re.match(r"(.*) in file '(.*?)', skipping ...", m.group(1))
             if m2:
                 return ('warning', m2.group(2), "0", m2.group(1))
             return ('warning', None, None, m.group(1))
 
         if match('^.*> ERROR - (.*)$'):
-            m2 = re.match("BibTeX subsystem: (.*?), line (\d+), (.*)$", m.group(1))
+            m2 = re.match(r"BibTeX subsystem: (.*?), line (\d+), (.*)$", m.group(1))
             if m2:
                 return ('error', m2.group(1), m2.group(2), m2.group(3))
             return ('error', None, None, m.group(1))

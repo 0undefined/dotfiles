@@ -1,0 +1,2 @@
+lock swaylock
+before-sleep swaylock --grace 0

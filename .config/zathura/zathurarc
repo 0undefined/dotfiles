@@ -1,3 +1,10 @@
+## Colemak bindings
+#map m scroll left
+#map n scroll down
+#map e scroll up
+#map i scroll right
+
+## Theme
 set recolor true
 set recolor-darkcolor   \#b2b2b2
 set recolor-lightcolor  rgba(8,8,8,0.35)
@@ -18,6 +25,7 @@ set inputbar-fg         \#e4e4e4
 
 set default-bg          rgba(0,0,0,0.8)
 
+## Behaviour
 set selection-clipboard clipboard
 set scroll-step 80
 set window-title-home-tilde true
